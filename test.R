@@ -12,4 +12,4 @@ ggplot(DX) +
   geom_line(colour = "#112446") +
   theme_minimal()
 
-#test
+#데스크탑에서 업로드 함
