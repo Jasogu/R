@@ -11,3 +11,5 @@ ggplot(DX) +
   aes(x = date, y = close) +
   geom_line(colour = "#112446") +
   theme_minimal()
+
+#test
