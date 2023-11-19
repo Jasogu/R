@@ -34,4 +34,4 @@ my
 
 tqk_get()
 
-#mac upload test
+#mac upload test ssh 
