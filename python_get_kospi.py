@@ -12,3 +12,4 @@ from matplotlib import pyplot as plt
 
 fdr.DataReader("ks11")["Close"].plot()
 
+KOSPI = fdr.DataReader("ks11")["Close"].plot()
