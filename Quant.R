@@ -1,4 +1,4 @@
-#주가 지수는 파이썬으로 엑셀 불러올 것.
+#주가 지수는 파이썬으로 엑셀 불러올 것
 
 library(ggplot2)
 library(readxl)
