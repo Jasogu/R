@@ -2,13 +2,12 @@
 library(ggplot2)
 library(gridExtra)
 
-par(mfrow=c(4, 4))
 
 # * 관리자·전문가(1,2)
 # 코로나 때 감소 후 기울기 증가
 g1 <- ggplot(labor_data) +
  aes(x = 시점, y = `* 관리자·전문가(1,2)`) +
- labs(y = "단위 : 천명", title = "관리자 전문가") +
+ labs(y = "단위 : 천명", title = "* 관리자·전문가(1,2)") +
  geom_col(fill = "steelblue") +
  theme_minimal() +
  theme(

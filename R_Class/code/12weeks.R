@@ -1,11 +1,11 @@
 #API
-serviceURL <- "https://api.odcloud.kr/api/"
+serviceURL <- "https://api.odcloud.kr/api/" # api base url
 operation <- "apnmOrg/v2/list"
-page <- "?page=1"
-perPage <- "&perPage=10"
-serviceKey <- "&serviceKey=ugJS7dUCR3lsNvhaZr07p8MApFtFrWQQsAEzGXPDdKHMMuFaEsXEnpNFeLTFrTUNw0Fu2UugZZxPEmAgEa%2F%2Bfw%3D%3D"
+page <- "?page=1" # ?로 시작해서 이후에 덧붙일 때 마다 &를 붙임
+perPage <- "&perPage=10" #한 페이지에서 볼 데이터 수
+serviceKey <- "&serviceKey=ugJS7dUCR3lsNvhaZr07p8MApFtFrWQQsAEzGXPDdKHMMuFaEsXEnpNFeLTFrTUNw0Fu2UugZZxPEmAgEa%2F%2Bfw%3D%3D" # &servicekey=내api값
 
-requestUrl = paste0(serviceURL, operation, page, perPage, serviceKey)
+requestUrl = paste0(serviceURL, operation, page, perPage, serviceKey) # paste0 : 공백없이 문자열 합. 0빼면 띄어쓰기 넣고 문자열 더함
 requestUrl
 
 library( jsonlite)
