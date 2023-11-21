@@ -1,0 +1,13 @@
+git init
+git pull origin main
+
+
+#git에 반영하지 않고 변경된 내용을 삭제
+git reset
+git checkout
+git clean -fdx
+
+1번째 줄 : 모든 staged된 파일이 unstage됩니다(실수로 커밋했을 경우, 로컬에서 unstage)
+2번째 줄 : 모든 변경 사항을 취소합니다.
+3번째 줄 : 추적할 수 없는 모든 파일 제거(추적된 파일만 남습니다)
+
