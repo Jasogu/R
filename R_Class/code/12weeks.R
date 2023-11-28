@@ -11,7 +11,7 @@ requestUrl
 library( jsonlite)
 library(httr)
 
-repos <- fromJSON(requestUrl) #연결 및 DataFrame으로의 변환
+repos <- fromJSON(requestUrl) #연결 및 DataFrame으로의 변환, JSON 타입만 가능. XML은 GET코드 사용
 repos <- data.frame(repos)
 str(repos)
 names(repos)
