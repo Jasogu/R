@@ -2,7 +2,6 @@
 library(ggplot2)
 library(gridExtra)
 
-
 # * 관리자·전문가(1,2)
 # 코로나 때 감소 후 기울기 증가
 g1 <- ggplot(labor_data) +
