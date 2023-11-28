@@ -50,7 +50,7 @@ mod.iris <- glm(Species ~., data= iris.new) # 로지스틱 회귀모델 도출
 summary(mod.iris) # 회귀모델의 상세 내용 확인
 
 mod.iris <- glm(Species ~., data = iris.new) #마침표 : 모든 변수 대입
-
+mod.iris
 # 예측 대상 데이터 생성(데이터프레임)
 unknown <- data.frame(rbind(c(5.1, 3.5, 1.4, 0.2)))
 names(unknown) <- names(iris)[1:4]
