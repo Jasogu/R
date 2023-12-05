@@ -1,5 +1,7 @@
 library(ggplot2)
 library(gridExtra)
+library(scatterplot3d)
+library(rgl)
 
 boxplot(final_data$wage~final_data$edu, data=final_data)
 plot(final_data$wage~final_data$old, data=final_data)
@@ -94,3 +96,10 @@ grid.arrange(e, f, nrow =1, ncol = 2)
 
 cor(fem$old, fem$experience)
 cor(man$old, man$experience)
+
+test_fem <- fem[,c(3, 2, 8 )]
+test_man <- man[, c(3, 2, 8)]
+
+plot3d(test_fem, size = 7)
+plot3d(test_man, size = 5)
+
