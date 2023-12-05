@@ -15,6 +15,7 @@ g1 <- ggplot(labor_data) +
     axis.text.x=element_text(angle=90, hjust=1)
   ) +
   coord_cartesian(ylim = c(min(labor_data$`* 관리자·전문가(1,2)`)-100, NA)) +
+  
 """
 더미변수
 eviews : ls gpi c gps recession81 gps_dummy
@@ -24,7 +25,6 @@ eviews : ls gpi c gps recession81
 genr error = sales - fitted_sales
 
 
-install.packages("car")
 library(car)
 
 head(Prestige)
