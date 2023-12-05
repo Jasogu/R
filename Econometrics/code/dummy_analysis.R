@@ -47,10 +47,13 @@ plot(wage ~ old, data=wage)
 abline(model)
 
 
-point <- as.numeric(wage$edu)
+education <- as.numeric(wage$edu)
+female <- wage$female*3+1
+
+#male = sircles female = triangle color = education
 ggplot(wage) +
-  aes(x = old, y = wage) +
-  geom_point(size = 5, shape = point) +
+  aes(x = old, y = wage, fill = education) +
+  geom_point(size = 5, pch = female +20) +
   theme_minimal()
 
 
