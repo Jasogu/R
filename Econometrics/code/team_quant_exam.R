@@ -100,6 +100,32 @@ cor(man$old, man$experience)
 test_fem <- fem[,c(3, 2, 8 )]
 test_man <- man[, c(3, 2, 8)]
 
-plot3d(test_fem, size = 7)
-plot3d(test_man, size = 5)
 
+
+fem_j <- fem[fem$edu == 9,c(3, 2, 8)]
+fem_h <- fem[fem$edu == 12,c(3, 2, 8)]
+fem_c <- fem[fem$edu == 14,c(3, 2, 8)]
+fem_u <- fem[fem$edu == 16,c(3, 2, 8)]
+man_j <- man[man$edu == 9,c(3, 2, 8)]
+man_h <- man[man$edu == 12,c(3, 2, 8)]
+man_c <- man[man$edu == 14,c(3, 2, 8)]
+man_u <- man[man$edu == 16,c(3, 2, 8)]
+
+d3 = scatterplot3d(fem$edu, fem$wage, fem$experience, type ='n', main = '여성 - 임금, 학력, 평균 근속년수')
+d3$points3d(fem_j$edu, fem_j$wage, fem_j$experience, bg='orange', pch=21, cex=2)
+d3$points3d(fem_h$edu, fem_h$wage, fem_h$experience, bg='blue', pch=21, cex=2)
+d3$points3d(fem_c$edu, fem_c$wage, fem_c$experience, bg='green', pch=21, cex=2)
+d3$points3d(fem_u$edu, fem_u$wage, fem_u$experience, bg='black', pch=21, cex=2)
+
+d4 = scatterplot3d(man$edu, man$wage, man$experience, type ='n', main = '남성 - 임금, 학력, 평균 근속년수')
+d4$points3d(man_j$edu, man_j$wage, man_j$experience, bg='orange', pch=21, cex=2)
+d4$points3d(man_h$edu, man_h$wage, man_h$experience, bg='blue', pch=21, cex=2)
+d4$points3d(man_c$edu, man_c$wage, man_c$experience, bg='green', pch=21, cex=2)
+d4$points3d(man_u$edu, man_u$wage, man_u$experience, bg='black', pch=21, cex=2)
+
+
+
+plot3d(test_fem, size = 7, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
+plot3d(test_man, size = 7, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
+
+c(rep('red', nrow(test_fem)), rep('blue', nrow(test_fem)), rep('green', nrow(test_fem)))
