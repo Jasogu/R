@@ -125,7 +125,7 @@ d4$points3d(man_u$edu, man_u$wage, man_u$experience, bg='black', pch=21, cex=2)
 
 
 
-plot3d(test_fem, size = 7, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
-plot3d(test_man, size = 7, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
+plot3d(test_fem, size = 10, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
+plot3d(test_man, size = 10, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
 
 c(rep('red', nrow(test_fem)), rep('blue', nrow(test_fem)), rep('green', nrow(test_fem)))
