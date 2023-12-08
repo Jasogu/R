@@ -129,3 +129,5 @@ plot3d(test_fem, size = 10, col = c(rep('orange', 7), rep('blue', 7), rep('steel
 plot3d(test_man, size = 10, col = c(rep('orange', 7), rep('blue', 7), rep('steelblue', 7), rep('black', 7)))
 
 c(rep('red', nrow(test_fem)), rep('blue', nrow(test_fem)), rep('green', nrow(test_fem)))
+
+# ls wage c experience edu_c edu_h edu_u experience*edu_c*female experience*edu_h*female experience*edu_u*female experience*edu_c experience*edu_h experience*edu_u
