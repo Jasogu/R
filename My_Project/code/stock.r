@@ -4,6 +4,8 @@ library(remotes)
 install_github("mrchypark/tqk")
 library(tqk)
 library(dplyr)
+install.packages("readxl")
+library(readxl)
 
 data <- code_get() #
 View(data)
