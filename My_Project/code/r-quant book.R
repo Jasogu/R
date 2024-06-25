@@ -51,12 +51,13 @@ samsung
 
 
 
-
+APPLE <- getSymbols("AAPL", from='2021-10-30', '2024-05-30' ,src = "yahoo", auto.assign = FALSE)
 NASDAQ <- getSymbols("^IXIC", from='2021-10-30', '2024-05-30' ,src = "yahoo", auto.assign = FALSE)
 GOLD <- getSymbols('GC=F', from='2021-10-30', '2024-05-30', auto.assign = FALSE)
 DGS10 <- getSymbols('DGS10', from='2021-10-30', to='2024-05-30', src='FRED',auto.assign=FALSE)
 CHINA <- getSymbols('000001.SS', from='2021-10-30', '2024-05-30', auto.assign = FALSE)
 
+APPLE <- Close_date(APPLE)
 NASDAQ <- Close_date(NASDAQ)
 GOLD <- Close_date(GOLD)
 CHINA <- Close_date(CHINA)
@@ -65,16 +66,17 @@ date <- index(DGS10)
 DGS10 <- as.data.frame(DGS10)
 DGS10$date <- date
 
-data <- merge(NASDAQ, GOLD, by='date')
+data <- merge(APPLE, NASDAQ)
+data <- merge(data, GOLD, by='date')
 data <- merge(data, CHINA, by='date')
 data <- merge(data, DGS10, by='date')
-colnames(data) <- c('date', 'NASDAQ', 'GOLD', 'CHINA', 'BOND10')
+colnames(data) <- c('date', 'APPLE', 'NASDAQ', 'GOLD', 'CHINA', 'BOND10')
 data <- na.omit(data)
-data <- scale(data[,2:5])
+data <- scale(data[,-1])
 data <- as.data.frame(data)
 cor(data)
 
-lm(NASDAQ ~ GOLD + CHINA + BOND10, data=data) %>% summary
+lm(APPLE ~ NASDAQ + GOLD + CHINA + BOND10, data=data) %>% summary
 
 
 
