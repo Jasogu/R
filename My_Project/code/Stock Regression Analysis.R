@@ -4,6 +4,9 @@
 #^IXIC=나스닥, ^KS11=코스피, ^GSOC=S&P500, 000001.SS=상해종합지수, ^N225=니케이225, GC=F :금, ^STOXX50E=유로50지수
 #BTC-USD:비트코인, DX-Y.NYB:달러인덱스, KRW=X :원화인덱스, JPY=X :엔화인덱스
 #국내 주가 코드, 코스피:KS, 코스닥:KQ
+#https://finance.yahoo.com/world-indices/ 야후 파이낸스 인덱스 티커목록
+
+#독립변수 후보들 : GDP성장률, 실업률, 인플레이션율, 이자율, 국채 수익률, 신용 스프레드, 금가격, 원유가격, 원자재 지수, VIX지수, 시장거래량, 미국 달러인덱스, 환율
 
 library(quantmod)
 library(dplyr)
