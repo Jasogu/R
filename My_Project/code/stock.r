@@ -7,7 +7,7 @@ library(dplyr)
 install.packages("readxl")
 library(readxl)
 
-data <- code_get() #
+ #
 View(data)
 
 KOSPI <- subset(data, data$market == "KOSPI")
@@ -16,3 +16,4 @@ head(KOSPI)
 head(KOSDAQ)
 
 subset(data, data$name == "삼성전자")$code
+
