@@ -19,4 +19,21 @@ test %>% View()
 data_table <- data$사고자구분 %>% table
 data_table/nrow(data) #사고 발생의 97%가 일반학생
 
+ggplot(data) +
+  aes(x = 사고당시활동) +
+  geom_bar(fill = "#112446")
+
+data$사고자성별 %>% table
+table(data$사고자성별)/nrow(data)
+
+girl <- data %>% select(사고당시활동, 사고자성별) %>% filter(사고자성별=="여") %>% table
+girl/sum(girl)
+
+boy <- data %>% select(사고당시활동, 사고자성별) %>% filter(사고자성별=="남") %>% table
+boy/sum(boy)
+
+
+ggplot(data) +
+  aes(x = 사고시간) +
+  geom_bar(fill = "#112446")
 
