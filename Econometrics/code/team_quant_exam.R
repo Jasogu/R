@@ -1,3 +1,8 @@
+#install.packages("gridExtra")
+#install.packages("scatterplot3d")
+#install.packages("rgl")
+font_import(pattern = "NanumGothic")
+
 library(ggplot2)
 library(gridExtra)
 library(scatterplot3d)
@@ -97,9 +102,8 @@ grid.arrange(e, f, nrow =1, ncol = 2)
 cor(fem$old, fem$experience)
 cor(man$old, man$experience)
 
-test_fem <- fem[,c(3, 2, 8 )]
+test_fem <- fem[,c(3, 2, 8 )] #edu, wage, experience 추출
 test_man <- man[, c(3, 2, 8)]
-
 
 
 fem_j <- fem[fem$edu == 9,c(3, 2, 8)]
