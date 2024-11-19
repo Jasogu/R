@@ -3,6 +3,7 @@
 #install.packages("rgl")
 font_import(pattern = "NanumGothic")
 
+
 library(ggplot2)
 library(gridExtra)
 library(scatterplot3d)
@@ -10,6 +11,7 @@ library(rgl)
 
 boxplot(final_data$wage~final_data$edu, data=final_data)
 plot(final_data$wage~final_data$old, data=final_data)
+
 
 
 
