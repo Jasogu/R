@@ -17,6 +17,7 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 summary(cars)
+if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 ```
 
 ## Including Plots
@@ -77,5 +78,16 @@ include=F - 실행 결과를 보여주지 않는다.
 * 본문 안에서 숫자 혹은 수식 입력 : '$' 기호 $1$개로 둘러쌈
 * 본문 밖에서 숫자 혹은 수식 입력 : '$' 기호 $2$개로 둘러쌈.
 
-$1+1 = 2$
-$$1+1 = 2$$ 
+문제에서 주어진 식은 다음과 같다. $1+1 = 2$
+
+답을 고르시오.
+
+문제에서 주어진 식은 다음과 같다.
+$$\int_{1}^{10}x dx$$
+답을 고르시오.
+
+### 줄 띄우기 html 코드 : &lt;br&gt;
+첫 번째 문단입니다.<br>두 번째 문단입니다.
+<br><br><br>
+세 번째 문단입니다.
+
