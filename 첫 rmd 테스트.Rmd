@@ -2,65 +2,46 @@
 title: "RMD 정리"
 author: "김홍식"
 date: "`r Sys.Date()`" #오늘날짜
-output: html_document
+output: pdf_document
+header-includes:
+   - \usepackage{kotex}
 mainfont: NanumGothic
 
-#if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
-#echo = F, 소스코드는 보여주지 않으면서 코드는 실행시킴
-#eval = F, 출력 문서에 코드는 보여주되 실행시키진 않음
-#results='hide', 실행값을 문서에 표기시키지 않음
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE) #앞으로 모든 청크는 echo=TRUE로 설정한다는 의미(초기셋팅)
+#knitr::opts_chunk$set(message = FALSE) #앞으로 모든 청크에 출력문서에서 오류메시지 삽입 안됨
+#knitr::opts_chunk$set(warning = FALSE) #앞으로 모든 청크에 출력문서에서 경고메시지 출력 안됨
+if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 ```
 
+# 요약
+1. echo = F, 소스코드는 보여주지 않으면서 코드는 실행시킴
+1. eval = F, 출력 문서에 코드는 보여주되 실행시키진 않음
+1. results="hide", 실행값을 문서에 표기시키지 않음. plot은 보여준다
+1. include=FALSE, 코드, 결과, plot 모두 숨김. 코드는 실행시킴
+1. pressure만 드래그 한 상태에서 컨트롤 엔터 시 pressure의 head를 보여줌
+1. if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse") tidyverse가 설치되어 있지 않으면 tidyverse 설치.
+1. 백틱키 ` 는 esc키 아래에 있음. 따옴표랑 구분할 것
+1. &lt;br&gt; 은 줄바꿈을 의미함
 
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-1. echo = TRUE 는 코드를 표기하지 않음
-1. 시작할 때 {r} 로 시작하는 것은 r언어로 코딩한다는 뜻
-1. 코드줄에서 컨트롤 엔터를 누르면 knit 문서안에서 바로 실행됨. pressure만 드래그 한 상태에서 컨트롤 엔터 시 pressure의 head를 보여줌
-
-eval=F - 코드를 실행하지 않는다.
-echo=F - 코드를 보여주지 않는다.
-include=F - 실행 결과를 보여주지 않는다.
-
+# R studio 설치 시 한글 pdf 오류 뜰 때 참고
+https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4pGN&index=3
 
 # 제목1
 #을 사용하면 제목을 다양하게 설정할 수 있다
 
 ## 제목2 
 ### 제목3
-#### 제목4
-
+#### 제목4 <br><br>
 
 ### 본문을 강조하는 방법
 본문에 *이탤릭(기울게)*을 사용할 수 있다
 
 본문에 **굵게**을 사용할 수 있다
 
-본문에 ~~교정기호~~을 사용할 수 있다
-
+<br><br>
 
 ### 본문에 리스트 넣는법
 본문에 넣을 수 있는 리스트의 종류는 두 가지이다.
@@ -73,6 +54,7 @@ include=F - 실행 결과를 보여주지 않는다.
    1. 안녕하세요
    1. 감사해요
 1. 파인애플
+<br><br>
 
 #### 2.**숫자가 없는 리스트**
 * 딸기
@@ -80,10 +62,11 @@ include=F - 실행 결과를 보여주지 않는다.
    - 하위 리스트
    - 예제
 * 바나나
+<br><br>
 
 ### 본문에 수학 모드 입력하기
-* 본문 안에서 숫자 혹은 수식 입력 : '$' 기호 $1$개로 둘러쌈
-* 본문 밖에서 숫자 혹은 수식 입력 : '$' 기호 $2$개로 둘러쌈.
+* 본문 안에서 숫자 혹은 수식 입력 : `$` 기호 $1$개로 둘러쌈
+* 본문 밖에서 숫자 혹은 수식 입력 : `$` 기호 $2$개로 둘러쌈.
 
 문제에서 주어진 식은 다음과 같다. $1+1 = 2$
 
@@ -98,3 +81,9 @@ $$\int_{1}^{10}x dx$$
 <br><br><br>
 세 번째 문단입니다.
 
+### 본문안에 코드 삽입
+본문을 작성 중입니다. 1부터 50까지의 합은 `r print(1)` 입니다. <br>
+본문을 작성 중입니다. 1부터 50까지의 합은 `r sum(1:50)`입니다.
+
+
+`r data('iris')`
