@@ -1,8 +1,12 @@
 ---
 title: "RMD 정리"
-author: "홍식"
-output: html_document
+author: "김홍식"
 date: "2024-11-12"
+
+output:
+  pdf_document:
+    latex_engine: xelatex
+mainfont: NanumGothic
 ---
 
 ```{r setup, include=FALSE}
