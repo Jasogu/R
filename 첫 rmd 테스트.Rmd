@@ -2,7 +2,7 @@
 title: "RMD 정리"
 author: "김홍식"
 date: "`r Sys.Date()`" #오늘날짜
-output: pdf_document
+output: html_document
 header-includes:
    - \usepackage{kotex}
 mainfont: NanumGothic
