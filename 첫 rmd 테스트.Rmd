@@ -1,15 +1,21 @@
 ---
 title: "RMD 정리"
 author: "김홍식"
-date: "2024-11-12"
-
+date: "`r Sys.Date()`" #오늘날짜
 output: html_document
 mainfont: NanumGothic
+
+#if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
+#echo = F, 소스코드는 보여주지 않으면서 코드는 실행시킴
+#eval = F, 출력 문서에 코드는 보여주되 실행시키진 않음
+#results='hide', 실행값을 문서에 표기시키지 않음
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
 
 ## R Markdown
 
@@ -19,7 +25,6 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r cars}
 summary(cars)
-if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 ```
 
 ## Including Plots
