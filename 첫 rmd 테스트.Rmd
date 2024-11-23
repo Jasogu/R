@@ -4,12 +4,12 @@ author: "김홍식"
 date: "`r Sys.Date()`" #오늘날짜
 output:
    bookdown::pdf_document2:
-      toc: TRUE
-#output: html_document
+      toc: TRUE #차례가 자동으로 보여짐
+urlcolor: blue #하이퍼링크 색깔이 파란색으로 표시
 header-includes:
    - \usepackage{kotex}
-
-
+   - \usepackage{subfig}
+# - \usepackage{flafter}
 
 ---
 
@@ -80,15 +80,32 @@ https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4
 답을 고르시오.
 
 문제에서 주어진 식은 다음과 같다.
+begin{aligned} 와 end, `\\`를 입력 해줘야 여러줄을 사용가능함
+`&` 엔드표시를 사용해서 정렬기준을 정한다
+$$ 
+\begin{aligned}
+f(x) = \int_{1}^{10}x dx \\
+g(x) = x^3 + \sqrt{y^3}
+\end{aligned}
 $$
-\int_{1}^{10}x dx
-$$
-답을 고르시오.
 
-### 줄 띄우기 html 코드 : &lt;br&gt;
+$$ 
+\begin{aligned}
+f(x) &= \int_{1}^{10}x dx \\
+g(x) &= x^3 + \sqrt{y^3} \\
+h(x,y,z) &= ax^2 + by^2 + cz^2
+\end{aligned}
+$$
+수학 기호 삽임 참고자료
+
+https://www.youtube.com/watch?v=opdX6bUUzP4&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4pGN&index=11
+
+
+### 줄 띄우기 html 코드 : &lt;br&gt; pdf인 경우 `\newline`사용
 첫 번째 문단입니다.<br>두 번째 문단입니다.
 <br><br><br>
-세 번째 문단입니다.
+세 번째 문단입니다. \newline
+pdf1 \newline pdf2 \newline \newline pdf3
 
 ### 본문안에 코드 삽입
 본문을 작성 중입니다. 1부터 50까지의 합은 `r print(1)` 입니다. <br>
@@ -96,3 +113,24 @@ $$
 
 
 `r data('iris')`
+
+# Rmd 파일에 링크 입력하는 방법
+
+문법 : `[링크제목](링크주소)`
+*설정 부분에 urlcolor 파란색으로 설정
+
+## 예제
+
+다음의 링크로 저의 깃허브
+[깃허브](https://github.com/Jasogu/R)를 연결
+
+# 그림 삽입
+
+## 마크다운 사용
+
+### 그림 하나넣기
+
+```markdown
+![그림설명](그림파일 있는 위치){크기설정}
+```
+
