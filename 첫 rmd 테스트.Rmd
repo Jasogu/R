@@ -2,10 +2,14 @@
 title: "RMD 정리"
 author: "김홍식"
 date: "`r Sys.Date()`" #오늘날짜
-output: html_document
+output:
+   bookdown::pdf_document2:
+      toc: TRUE
+#output: html_document
 header-includes:
    - \usepackage{kotex}
-mainfont: NanumGothic
+
+
 
 ---
 
@@ -25,6 +29,9 @@ if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 1. if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse") tidyverse가 설치되어 있지 않으면 tidyverse 설치.
 1. 백틱키 ` 는 esc키 아래에 있음. 따옴표랑 구분할 것
 1. &lt;br&gt; 은 줄바꿈을 의미함
+
+# html을 pdf로 변환하는 코드
+
 
 # R studio 설치 시 한글 pdf 오류 뜰 때 참고
 https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4pGN&index=3
@@ -68,7 +75,7 @@ https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4
 * 본문 안에서 숫자 혹은 수식 입력 : `$` 기호 $1$개로 둘러쌈
 * 본문 밖에서 숫자 혹은 수식 입력 : `$` 기호 $2$개로 둘러쌈.
 
-문제에서 주어진 식은 다음과 같다. $1+1 = 2$
+문제에서 주어진 식은 다음과 같다. $y=f(x)$
 
 답을 고르시오.
 
