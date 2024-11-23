@@ -80,7 +80,9 @@ https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4
 답을 고르시오.
 
 문제에서 주어진 식은 다음과 같다.
-$$\int_{1}^{10}x dx$$
+$$
+\int_{1}^{10}x dx
+$$
 답을 고르시오.
 
 ### 줄 띄우기 html 코드 : &lt;br&gt;
