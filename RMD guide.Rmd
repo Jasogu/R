@@ -25,7 +25,8 @@ if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 1. pressure만 드래그 한 상태에서 컨트롤 엔터 시 pressure의 head를 보여줌
 1. if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse") tidyverse가 설치되어 있지 않으면 tidyverse 설치.
 1. 백틱키 ` 는 esc키 아래에 있음. 따옴표랑 구분할 것
-1. &lt;br&gt; 은 줄바꿈을 의미함
+1. &lt;br&gt; 와 \newline  은 줄바꿈을 의미함
+1. 하이픈3개 이상 or 별표 3개 이상 사용시 수평선을 그림.
 
 # html을 pdf로 변환하는 코드
 
@@ -33,19 +34,26 @@ if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 # R studio 설치 시 한글 pdf 오류 뜰 때 참고
 https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4pGN&index=3
 
+# Rmd 문법 참고
+https://datasirup.tistory.com/42
+
 # 제목1
 #을 사용하면 제목을 다양하게 설정할 수 있다
 
 ## 제목2 
 ### 제목3
-#### 제목4 <br><br>
+#### 제목4
 
 ### 본문을 강조하는 방법
 본문에 *이탤릭(기울게)*을 사용할 수 있다
 
-본문에 **굵게**을 사용할 수 있다
+본문에 **굵게**을 사용할 수 있다. hrule 은 수평선
+\hrule
 
-<br><br>
+
+
+
+  
 
 ### 본문에 리스트 넣는법
 본문에 넣을 수 있는 리스트의 종류는 두 가지이다.
@@ -58,7 +66,7 @@ https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4
    1. 안녕하세요
    1. 감사해요
 1. 파인애플
-<br><br>
+  
 
 #### 2.**숫자가 없는 리스트**
 * 딸기
@@ -66,7 +74,7 @@ https://www.youtube.com/watch?v=WMzUq9PyNIQ&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4
    - 하위 리스트
    - 예제
 * 바나나
-<br><br>
+  
 
 ### 본문에 수학 모드 입력하기
 * 본문 안에서 숫자 혹은 수식 입력 : `$` 기호 $1$개로 둘러쌈
@@ -98,14 +106,16 @@ $$
 https://www.youtube.com/watch?v=opdX6bUUzP4&list=PLKtLBdGREmMltWf0Z8jFNULMEAb-w4pGN&index=11
 
 
-### 줄 띄우기 html 코드 : &lt;br&gt; pdf인 경우 `\newline`사용
-첫 번째 문단입니다.<br>두 번째 문단입니다.
-<br><br><br>
-세 번째 문단입니다. \newline
-pdf1 \newline pdf2 \newline \newline pdf3
+### 줄 띄우기 html 코드 : &lt;br&gt; pdf인 경우 ` `사용
+첫 번째 문단입니다.  
+두 번째 문단입니다.
+
+
+세 번째 문단입니다.  
+pdf1 \newline  pdf2 \newline \newline    pdf3 pdf4       pdf5
 
 ### 본문안에 코드 삽입
-본문을 작성 중입니다. 1부터 50까지의 합은 `r print(1)` 입니다. <br>
+본문을 작성 중입니다. 1부터 50까지의 합은 `r print(1)` 입니다.  
 본문을 작성 중입니다. 1부터 50까지의 합은 `r sum(1:50)`입니다.
 
 
@@ -118,7 +128,7 @@ pdf1 \newline pdf2 \newline \newline pdf3
 
 ## 예제
 
-다음의 링크로 저의 깃허브
+다음의 링크로 저의 깃허브 \\
 [깃허브](https://github.com/Jasogu/R)를 연결
 
 # 그림 삽입
