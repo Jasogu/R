@@ -1,15 +1,12 @@
 ---
-title: "RMD 정리"
-author: "김홍식"
-date: "`r Sys.Date()`" #오늘날짜
+title: "Untitled"
+author: "HONG"
+date: "2025-01-09"
 output:
-   bookdown::pdf_document2:
-      toc: TRUE #차례가 자동으로 보여짐
-urlcolor: blue #하이퍼링크 색깔이 파란색으로 표시
-header-includes:
-   - \usepackage{kotex}
-   - \usepackage{subfig}
-# - \usepackage{flafter}
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies: ["kotex"]
+mainfont: NanumGothic
 
 ---
 
@@ -133,4 +130,3 @@ pdf1 \newline pdf2 \newline \newline pdf3
 ```markdown
 ![그림설명](그림파일 있는 위치){크기설정}
 ```
-
