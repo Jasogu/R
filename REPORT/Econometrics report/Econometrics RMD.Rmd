@@ -1,0 +1,35 @@
+---
+output:
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies: ["kotex"]
+mainfont: NanumGothic
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+#knitr::opts_chunk$set(message = FALSE) #앞으로 모든 청크에 출력문서에서 오류메시지 삽입 안됨
+#knitr::opts_chunk$set(warning = FALSE) #앞으로 모든 청크에 출력문서에서 경고메시지 출력 안됨
+if (!"extrafont" %in% installed.packages()) install.packages("extrafont")
+
+library(readxl)
+library(ggplot2)
+library(dplyr)
+
+setwd("~/R/REPORT/Econometrics report")
+path <- file.path("Data")
+data <- read_excel(file.path(path, "data.xlsx"))
+```
+
+# 통계청 자료를 통해 알아보는 한국의 임금결정 모델 분석
+\hrule
+
+
+
+
+
+
+
+
