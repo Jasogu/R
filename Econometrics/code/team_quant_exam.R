@@ -1,7 +1,7 @@
 #install.packages("gridExtra")
 #install.packages("scatterplot3d")
 #install.packages("rgl")
-font_import(pattern = "NanumGothic")
+font_import(pattern = "MalgunGothic")
 
 
 library(ggplot2)

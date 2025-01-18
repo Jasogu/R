@@ -28,7 +28,8 @@ if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 1. 백틱키 ` 는 esc키 아래에 있음. 따옴표랑 구분할 것
 1. &lt;br&gt; 와 \newline  은 줄바꿈을 의미함
 1. 하이픈3개 이상 or 별표 3개 이상 사용시 수평선을 그림.
-1. 하이픈 newline 줄 바꿈
+1. 글 뒤에 하이픈 newline 줄 바꿈
+1. 하이픈 공백 두 번 줄 바꿈
 # html을 pdf로 변환하는 코드
 
 

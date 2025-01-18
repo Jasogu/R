@@ -1,9 +1,10 @@
 ---
 output:
   pdf_document:
-    latex_engine: xelatex
-    extra_dependencies: ["kotex"]
-mainfont: NanumGothic
+    latex_engine : xelatex
+    extra_dependencies : ["kotex"]
+mainfont : MalgunGothic
+monofont : MalgunGothic
 ---
 
 
@@ -18,18 +19,36 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 
-setwd("~/R/REPORT/Econometrics report")
+#setwd("~/R/REPORT/Econometrics report")
 path <- file.path("Data")
 data <- read_excel(file.path(path, "data.xlsx"))
 ```
 
+\center
 # 통계청 자료를 통해 알아보는 한국의 임금결정 모델 분석
 \hrule
+\  
+
+\raggedright
+ KOSIS 자료^[출처](https://kosis.kr/statHtml/statHtml.do?orgId=118&tblId=DT_118N_PAYM32&conn_path=I3)^를 이용해 한국에서 학력, 근속년수, 성별이 임금에 미치는 영향을 알아보고 시각화를 하고자 한다.  
 
 
+| 변수명      | 설명                                    |
+|-------------|-----------------------------------------|
+| obs         | 관측 번호                              |
+| wage        | 월임금총액 (천원)                      |
+| experience  | 평균근속년수 (년)                      |
+| edu         | 학력 (중졸이하 9, 고졸 12, 전문대졸 14, 대졸이상 16) |
+| female      | 여성 = 1, 남성 = 0                     |
+| old         | 평균연령 (세)                          |
+| worker      | 근로자수 (명)                          |
+| work_date   | 근로일수 (일)                          |
+| work_time   | 총근로시간 (시간)                      |
 
 
-
+ worker \hspace{2cm} 근로자수 (명)                          
+ work_date \hspace{2cm} 근로일수 (일)                          
+ work_time \hspace{2cm} 총근로시간 (시간)                      
 
 
 
