@@ -14,11 +14,18 @@ library(readxl)
 final_data <- read_excel("~/R/REPORT/Econometrics report/final_data.xlsx")
 
 model <- lm(wage~experience + edu + female + old, data=final_data)
-
+par(mfrow = c(2, 2))
+plot(model)
 summary(model)
+
 plot(wage ~ old, data=final_data)
 abline(lm(wage ~ old, data=final_data))
 lm(wage ~ old, data=final_data) %>% summary
+
+model <- lm(wage~experience + old + female, data=final_data)
+model %>% summary
+par(mfrow = c(2, 2))
+plot(model)
 
 
 fem = data.frame()
