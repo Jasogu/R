@@ -52,10 +52,10 @@ a <- ggplot(fem) +
   ggtitle("여성 - 평균 근속년수와 임금") +
   xlab("평균근속년수") +
   ylab("임금") +
-  annotate(geom="text", x=9, y=4200, label="대졸여성", size=6) +
-  annotate(geom="text", x=9, y=2800, label="고졸여성", size=6) +
-  annotate(geom="text", x=8, y=2400, label="중졸여성", size=6) +
-  annotate(geom="text", x=8, y=2000, label="중졸미만여성", size=6) +
+  #annotate(geom="text", x=9, y=4200, label="대졸여성", size=6) +
+  #annotate(geom="text", x=9, y=2800, label="고졸여성", size=6) +
+  #annotate(geom="text", x=8, y=2400, label="중졸여성", size=6) +
+  #annotate(geom="text", x=8, y=2000, label="중졸미만여성", size=6) +
   scale_color_discrete(name = "학력", labels = c("중졸미만여성", "중졸여성", "고졸여성", "대졸여성")) + #범례 제목이랑 항목이름 바꾸기. factor여야 범례가 제대로 설정됨
   guides(colour = guide_legend(reverse = TRUE)) + #범례항목 순서 거꾸로 정렬
   theme_minimal() +
