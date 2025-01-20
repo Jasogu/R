@@ -16,7 +16,7 @@ data_2019[!complete.cases(data_2019),] %>% View #NA인 행 모두 추출
 colnames(data_2019)
 
 data_2019 %>% dim
-
+data_2019 %>% str
 
 
 data_2019$연도 <- 2019
