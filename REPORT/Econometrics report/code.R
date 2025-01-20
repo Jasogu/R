@@ -124,10 +124,10 @@ grid.arrange(c, d, nrow =1, ncol = 2)
 
 #학력과 임금 boxplot
 par(mfrow = c(1, 2))
-a <- boxplot(fem$wage~fem$edu, data=fem, main = "여성 - 임금과 학력의 관계", cex.main = 2, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대졸", "대졸이상"),
+p1 <- boxplot(fem$wage~fem$edu, data=fem, main = "여성 - 임금과 학력의 관계", cex.main = 2, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대졸", "대졸이상"),
              xlab = "학력", ylab = "임금", cex.axis=1.5, cex.lab=2)
 
-b <- boxplot(man$wage~man$edu, data=man, main = "남성 - 임금과 학력의 관계", cex.main = 2, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대졸", "대졸이상"),
+p2 <- boxplot(man$wage~man$edu, data=man, main = "남성 - 임금과 학력의 관계", cex.main = 2, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대졸", "대졸이상"),
              xlab = "학력", ylab = "임금", cex.lab = 2, cex.axis=1.5)
 
 
