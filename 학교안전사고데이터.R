@@ -1,6 +1,7 @@
 library(dplyr)
 library(ggplot2)
 library(readxl)
+library(stringr)
 theme_set(theme_grey(base_family='NanumGothic')) #나눔고딕 폰트 사용(ggplot2 한글 깨짐)
 
 data_2019 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2019") #연도별로 '구분' 맨 앞 글자 A, B, C, D, E 순서
@@ -13,10 +14,37 @@ data_2019 %>% is.na %>% table #NA 개수 확인
 data_2019[!complete.cases(data_2019),] %>% View #NA인 행 모두 추출
 
 
-colnames(data_2019)
+data <- rbind(data_2019, data_2020)
+data <- rbind(data, data_2021)
+data <- rbind(data, data_2022)
+if ("매개물" %in% colnames(data_2023)) data_2023 <- rename(data_2023, 사고매개물 = 매개물)
+data <- rbind(data, data_2023)
 
+test <- data %>% select(구분) %>% mutate(testing = str_sub(data$구분, 1, 1)) #구분의 맨 앞글자(연도) 추출
+test %>% select(testing) %>% table #잘 합쳐졌는지 개수 확인
+rm(test)
+
+#data %>% filter(str_detect(구분, "^A")) %>% mutate(year = 2019)
+
+data$year <- 0
+data$year <- ifelse(str_sub(data$구분, 1, 1) == "A", 2019,
+             ifelse(str_sub(data$구분, 1, 1) == "B", 2020,
+             ifelse(str_sub(data$구분, 1, 1) == "C", 2021,
+             ifelse(str_sub(data$구분, 1, 1) == "D", 2022,
+             ifelse(str_sub(data$구분, 1, 1) == "E", 2023,
+                    0)))))
+
+
+
+
+
+data %>% head
+
+   
 data_2019 %>% dim
 data_2019 %>% str
+
+
 
 
 data_2019$연도 <- 2019
