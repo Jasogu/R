@@ -4,7 +4,8 @@ library(readxl)
 library(stringr)
 theme_set(theme_grey(base_family='NanumGothic')) #나눔고딕 폰트 사용(ggplot2 한글 깨짐)
 
-data_2019 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2019") #연도별로 '구분' 맨 앞 글자 A, B, C, D, E 순서
+#연도별로 '구분' 맨 앞 글자 A, B, C, D, E 순서
+data_2019 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2019")
 data_2020 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2020")
 data_2021 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2021")
 data_2022 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2022")
@@ -24,9 +25,12 @@ test <- data %>% select(구분) %>% mutate(testing = str_sub(data$구분, 1, 1))
 test %>% select(testing) %>% table #잘 합쳐졌는지 개수 확인
 rm(test)
 
-#data %>% filter(str_detect(구분, "^A")) %>% mutate(year = 2019)
+head(data)
+tail(data)
+str(data)
 
 data$year <- 0
+# str_sub("data", 1, 3) == "dat"
 data$year <- ifelse(str_sub(data$구분, 1, 1) == "A", 2019,
              ifelse(str_sub(data$구분, 1, 1) == "B", 2020,
              ifelse(str_sub(data$구분, 1, 1) == "C", 2021,
@@ -34,17 +38,10 @@ data$year <- ifelse(str_sub(data$구분, 1, 1) == "A", 2019,
              ifelse(str_sub(data$구분, 1, 1) == "E", 2023,
                     0)))))
 
-
-
-
-
 data %>% head
-
-   
-data_2019 %>% dim
-data_2019 %>% str
-
-
+data %>% dim
+data %>% str
+data$학교급 %>% table
 
 
 data_2019$연도 <- 2019
@@ -76,4 +73,15 @@ boy/sum(boy)
 ggplot(data) +
   aes(x = 사고시간) +
   geom_bar(fill = "#112446")
+
+
+test <- data %>% select(사고자성별, 사고시간, 사고장소, 사고부위, 사고형태, 사고당시활동, 사고매개물) %>% filter(사고시간=="수업시간")
+
+table(test$사고매개물)/sum(table(test$사고매개물))
+ggplot(test) +
+   aes(x = 사고매개물) +
+   geom_bar(fill = "#112446") +
+   theme_minimal()
+
+
 
