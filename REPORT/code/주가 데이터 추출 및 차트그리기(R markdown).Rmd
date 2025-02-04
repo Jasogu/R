@@ -36,7 +36,7 @@ theme_set(theme_grey(base_family='NanumGothic'))
 2020년 1월 1일부터 오늘까지의 Apple Inc. 주식 데이터 로드
 
 ```{r load-apple}
-getSymbols("AAPL", from = "2020-01-01", to = Sys.Date())
+getSymbols("AAPL", from = "2020-01-01", to = Sys.Date()-1)
 head(AAPL)
 ```
 
@@ -70,7 +70,7 @@ chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)"
 2020년 1월 1일부터 오늘까지 삼성전자 데이터(005930.KS)를 가져옴
 
 ```{r load-samsung}
-getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
+getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date()-2)
 head(`005930.KS`)
 ```
 
@@ -114,6 +114,7 @@ chartSeries(samsung_monthly,
 # 데이터 프레임으로 변환
 apple_df <- data.frame(date=index(AAPL), coredata(AAPL))
 samsung_df <- data.frame(date=index(`005930.KS`), coredata(`005930.KS`))
+samsung_df %>% head
 
 # 종가만 추출 후 합치기 (Apple: 5번째 열, Samsung: 5번째 열)
 apple_df_close <- apple_df %>% select(1, 5)
