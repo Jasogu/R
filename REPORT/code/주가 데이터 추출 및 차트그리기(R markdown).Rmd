@@ -1,7 +1,7 @@
 ---
 title: "Quantmod library 코드"
 author: "김홍식"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}

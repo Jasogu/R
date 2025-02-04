@@ -1,36 +1,15 @@
----
-title: "R markdown 보고서"
-author: "김홍식"
-date: "2025-02-04"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
-```
-
-
-```{r pressure, echo=FALSE}
-#install.packages("gridExtra")
-#install.packages("scatterplot3d")
-#install.packages("rgl")
-#font_import(pattern = "MalgunGothic")
-
-library(dplyr)
-library(ggplot2)
-library(gridExtra)
-library(scatterplot3d)
-library(rgl)
-library(readxl)
-
-
-final_data <- read_excel("~/R/Econometrics/Team Project/Data.xlsx")
-```
+R markdown 보고서
+================
+김홍식
+2025-02-04
 
 ## 변수 설명
-wage = 임금 : 월임금총액(단위:천 원). 정액급여+초과급여+전년도연간특별급여를 12로 나눔
 
-experience = 평균 근속년수 : 근로자가 현 사업체에 입사한 날로부터 조사대상 기준일까지 근무한 기간을 말함
+wage = 임금 : 월임금총액(단위:천 원).
+정액급여+초과급여+전년도연간특별급여를 12로 나눔
+
+experience = 평균 근속년수 : 근로자가 현 사업체에 입사한 날로부터
+조사대상 기준일까지 근무한 기간을 말함
 
 edu = 학력 : 중졸이하 9, 고졸 12, 전문대졸 14, 대졸이상 16
 
@@ -38,87 +17,195 @@ female = 성별 : 여자 1, 남자 0
 
 old = 나이 : 평균연령
 
-
 ## Q-Q plot, 선형회귀분석
+
 y = 임금, x = experience, edu, female, old
 
-```{r Q-Q plot}
-
+``` r
 model_first <- lm(wage~experience + edu + female + old, data=final_data)
 par(mfrow = c(2, 2))
 plot(model_first)
+```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/Q-Q%20plot-1.png)<!-- -->
+
+``` r
 summary(model_first)
 ```
 
+    ## 
+    ## Call:
+    ## lm(formula = wage ~ experience + edu + female + old, data = final_data)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -581.63 -237.40  -43.72  168.70  898.13 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  1525.76     394.45   3.868 0.000312 ***
+    ## experience    313.54      33.48   9.366 1.15e-12 ***
+    ## edu           127.86      19.80   6.458 3.91e-08 ***
+    ## female       -544.14     105.68  -5.149 4.25e-06 ***
+    ## old           -37.08      10.79  -3.435 0.001185 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 346.5 on 51 degrees of freedom
+    ## Multiple R-squared:  0.9028, Adjusted R-squared:  0.8952 
+    ## F-statistic: 118.5 on 4 and 51 DF,  p-value: < 2.2e-16
 
 ## 임금과 나이
-```{r cor test}
+
+``` r
 par(mfrow = c(1, 2))
 plot(wage ~ old, data=final_data)
 abline(lm(wage ~ old, data=final_data))
 lm(wage ~ old, data=final_data) %>% summary
+```
 
+    ## 
+    ## Call:
+    ## lm(formula = wage ~ old, data = final_data)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1865.15  -356.24   -60.54   389.47  2790.42 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  1204.00     489.02   2.462    0.017 *  
+    ## old            53.94      12.73   4.237  8.9e-05 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 935.9 on 54 degrees of freedom
+    ## Multiple R-squared:  0.2495, Adjusted R-squared:  0.2356 
+    ## F-statistic: 17.95 on 1 and 54 DF,  p-value: 8.898e-05
+
+``` r
 plot(wage ~ experience, data=final_data)
 abline(lm(wage ~ experience, data=final_data))
+```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/cor%20test-1.png)<!-- -->
+
+``` r
 lm(wage ~ experience, data=final_data) %>% summary
 ```
 
+    ## 
+    ## Call:
+    ## lm(formula = wage ~ experience, data = final_data)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1077.26  -393.14   -28.05   309.27  1587.65 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   1808.8      162.8   11.11 1.44e-15 ***
+    ## experience     257.9       25.6   10.07 5.30e-14 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 636.7 on 54 degrees of freedom
+    ## Multiple R-squared:  0.6526, Adjusted R-squared:  0.6462 
+    ## F-statistic: 101.5 on 1 and 54 DF,  p-value: 5.296e-14
+
 ## old와 experience의 상관관계 0.85
-```{r cor}
+
+``` r
 cor(final_data$old, final_data$experience)
 ```
-old와 experience는 상당히 상관관계가 높다. -> VIF 증가 -> 모델 신뢰도 하락<br>
-experience가 분석 상으로도 육안으로도 임금을 더 잘 설명해주므로 old를 제거하고 experience를 사용
 
+    ## [1] 0.8578009
+
+old와 experience는 상당히 상관관계가 높다. -\> VIF 증가 -\> 모델 신뢰도
+하락<br> experience가 분석 상으로도 육안으로도 임금을 더 잘 설명해주므로
+old를 제거하고 experience를 사용
 
 ## old를 제거하고 모델 재분석
-```{r model edit}
+
+``` r
 model <- lm(wage~experience + old + female, data=final_data)
 model %>% summary
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = wage ~ experience + old + female, data = final_data)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1210.1  -240.6  -109.0   178.4  1212.0 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  3581.76     310.93  11.519 6.29e-16 ***
+    ## experience    405.82      40.42  10.040 9.05e-14 ***
+    ## old           -63.91      13.30  -4.805 1.36e-05 ***
+    ## female       -403.77     138.09  -2.924  0.00511 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 462.6 on 52 degrees of freedom
+    ## Multiple R-squared:  0.8234, Adjusted R-squared:  0.8132 
+    ## F-statistic: 80.82 on 3 and 52 DF,  p-value: < 2.2e-16
+
+``` r
 par(mfrow = c(2, 2))
 plot(model)
 ```
 
-## 모델 분석 결과(*** 신뢰수준)
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/model%20edit-1.png)<!-- -->
 
-중졸이하남자 = 2134.503*** + 151.298***∙exper
+## 모델 분석 결과(\*\*\* 신뢰수준)
 
-고졸남자 = 2134.503*** + 151.298***∙exper + 214.096 + 22.533∙exper
+중졸이하남자 = 2134.503\*\*\* + 151.298\*\*\*∙exper
 
-전문대졸남자 = 2134.503*** + 151.298*** ∙exper + 302.234* + 48.859*∙exper
+고졸남자 = 2134.503\*\*\* + 151.298\*\*\*∙exper + 214.096 + 22.533∙exper
 
-대졸이상남자 = 2134.503*** + 151.298*** ∙exper + 582.443*** + 152.996***∙exper
+전문대졸남자 = 2134.503\*\*\* + 151.298\*\*\* ∙exper + 302.234\* +
+48.859\*∙exper
 
-중졸이하여자 = 2134.503*** - 475.061*** + 151.298***∙exper
+대졸이상남자 = 2134.503\*\*\* + 151.298\*\*\* ∙exper + 582.443\*\*\* +
+152.996\*\*\*∙exper
 
-고졸여자 = 2134.503*** - 475.061*** + 151.298***∙exper + 214.096 + 22.533∙exper – 38.661∙exper
+중졸이하여자 = 2134.503\*\*\* - 475.061\*\*\* + 151.298\*\*\*∙exper
 
+고졸여자 = 2134.503\*\*\* - 475.061\*\*\* + 151.298\*\*\*∙exper +
+214.096 + 22.533∙exper – 38.661∙exper
 
-전문대졸여자 = 2134.503*** - 475.061*** + 151.298*** ∙exper + 302.234* + 48.859** ∙exper – 60.224**∙exper
+전문대졸여자 = 2134.503\*\*\* - 475.061\*\*\* + 151.298\*\*\* ∙exper +
+302.234\* + 48.859\*\* ∙exper – 60.224\*\*∙exper
 
-대졸이상여자 =2134.503*** - 475.061*** + 151.298*** ∙exper + 582.443*** + 152.996*** ∙exper – 90.040***∙exper
+대졸이상여자 =2134.503\*\*\* - 475.061\*\*\* + 151.298\*\*\* ∙exper +
+582.443\*\*\* + 152.996\*\*\* ∙exper – 90.040\*\*\*∙exper
 
 <br>
 
 ## 남녀가 동일한 조건일 때 임금 차이 추정
 
-대졸이상남자 = 2134.503*** + 151.298*** ∙exper + 582.443*** + 152.996***∙exper 
+대졸이상남자 = 2134.503\*\*\* + 151.298\*\*\* ∙exper + 582.443\*\*\* +
+152.996\*\*\*∙exper
 
-대졸이상여자 =2134.503*** - 475.061*** + 151.298*** ∙exper + 582.443*** + 152.996∙exper – 90.040***∙exper
+대졸이상여자 =2134.503\*\*\* - 475.061\*\*\* + 151.298\*\*\* ∙exper +
+582.443\*\*\* + 152.996∙exper – 90.040\*\*\*∙exper
 
 ### 평균근속년수(exper) = 10일경우
 
-#### 대졸이상남자= 2716.946 + 304.294∙exper = 5759.886 = __월 575만원__
+#### 대졸이상남자= 2716.946 + 304.294∙exper = 5759.886 = **월 575만원**
 
-#### 대졸이상여자= 2241.885 + 214.254∙exper = 4384.425 = __월 438만원__
+#### 대졸이상여자= 2241.885 + 214.254∙exper = 4384.425 = **월 438만원**
 
 <br>
 
-
 ## 데이터 시각화
+
 ### 남성과 여성, 임금과 평균근속년수의 관계
 
-```{r visualization}
+``` r
 fem = data.frame()
 man = data.frame()
 for (i in 1:nrow(final_data)) {
@@ -173,14 +260,21 @@ b <- ggplot(man) +
         axis.title.y = element_text(size = 20))
    
 a
+```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/visualization-1.png)<!-- -->
+
+``` r
 b
 ```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/visualization-2.png)<!-- -->
 
 <br><br>
 
 ### 남성과 여성, 나이와 임금의 관계
-```{r}
 
+``` r
 #나이와 임금
 c <- ggplot(fem) +
   aes(x = old, y = wage, color = edu, group = edu) +
@@ -217,15 +311,21 @@ d <- ggplot(man) +
          axis.title.y = element_text(size = 20))
 
 c
+```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
 d
 ```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
 
 <br>
 
 ## Boxplot
 
-```{r}
-
+``` r
 #학력과 임금 boxplot
 par(mfrow = c(1, 2))
 p1 <- boxplot(fem$wage~fem$edu, data=fem, main = "여성 - 임금과 학력의 관계", cex.main = 1.5, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대", "대졸"),
@@ -233,8 +333,11 @@ p1 <- boxplot(fem$wage~fem$edu, data=fem, main = "여성 - 임금과 학력의 �
 
 p2 <- boxplot(man$wage~man$edu, data=man, main = "남성 - 임금과 학력의 관계", cex.main = 1.5, ylim = c(1500, 7000), names = c("중졸이하", "고졸", "전문대", "대졸"),
              xlab = "학력", ylab = "임금", cex.axis=1, cex.lab = 1.5)
+```
 
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
+``` r
 #평균 근속년수과 나이
 e <- ggplot(fem) +
   aes(x = old, y = experience, color = edu, group = edu) +
@@ -274,30 +377,44 @@ f <- ggplot(man) +
 <br>
 
 ### 여성이 남성에 비해 나이와 근속년수가 비례하지 않는 모습을 보임
-```{r}
+
+``` r
 e
+```
+
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
 f
 ```
 
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+
 #### 여자 - 나이와 근속년수 상관관계 0.83
-```{r}
+
+``` r
 cor(fem$old, fem$experience)
 ```
 
-#### 남자 - 나이와 근속년수 상관관계 0.97
-```{r}
-cor(man$old, man$experience)
+    ## [1] 0.8308853
 
+#### 남자 - 나이와 근속년수 상관관계 0.97
+
+``` r
+cor(man$old, man$experience)
 ```
+
+    ## [1] 0.9708377
+
 ### 남자가 여자보다 나이에 비해 근속년수가 길다
+
 ### 특히 여성이 30대가 될 때 근속년수가 꺾이는 경력단절 현상이 관찰됨
 
 <br><br>
 
 ## 3D plot
-```{r}
 
-
+``` r
 test_fem <- fem[,c(3, 2, 8 )] #edu, wage, experience 추출
 test_man <- man[, c(3, 2, 8)]
 
@@ -326,7 +443,11 @@ d3$points3d(fem_c$edu, fem_c$wage, fem_c$experience, bg='green', pch=21, cex=2)
 d3$points3d(fem_c$edu, fem_c$wage, fem_c$experience, type = 'l', lwd = 2) 
 d3$points3d(fem_u$edu, fem_u$wage, fem_u$experience, bg='black', pch=21, cex=2)
 d3$points3d(fem_u$edu, fem_u$wage, fem_u$experience, type = 'l', lwd = 2)
+```
 
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
 d4 = scatterplot3d(man$edu, man$wage, man$experience, type ='h', color = "blue", main = '남성 - 임금, 학력, 평균 근속년수',
                    xlab = "학력", ylab = "임금", zlab = "평균 근속년수",
                    cex.lab = 1.5,
@@ -342,11 +463,16 @@ d4$points3d(man_u$edu, man_u$wage, man_u$experience, bg='black', pch=21, cex=2)
 d4$points3d(man_u$edu, man_u$wage, man_u$experience, type = 'l', lwd = 2)
 ```
 
+![](통계청-자료를-통해-알아보는-한국의-임금결정-모델-분석_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+
 <br><br><br>
 
 ## 결론
-#### 2019년기준,우리나라는 학력에 의한 임금 차이가 크다
-#### 여성은 4년제 대학을 졸업하는게 효용이 크다
-#### 여성은 남성에 비해 경력에서 왜곡이 발생한다
-#### 여성은 남성에 비해 평균적으로 임금이 적다.이는 모든 연령, 경력, 학력에서 동일하게 나타난다.
 
+#### 2019년기준,우리나라는 학력에 의한 임금 차이가 크다
+
+#### 여성은 4년제 대학을 졸업하는게 효용이 크다
+
+#### 여성은 남성에 비해 경력에서 왜곡이 발생한다
+
+#### 여성은 남성에 비해 평균적으로 임금이 적다.이는 모든 연령, 경력, 학력에서 동일하게 나타난다.
