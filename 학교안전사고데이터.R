@@ -4,6 +4,7 @@ library(readxl)
 library(stringr)
 theme_set(theme_grey(base_family='NanumGothic')) #나눔고딕 폰트 사용(ggplot2 한글 깨짐)
 
+
 #연도별로 '구분' 맨 앞 글자 A, B, C, D, E 순서
 data_2019 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2019")
 data_2020 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2020")
@@ -12,7 +13,7 @@ data_2022 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2022")
 data_2023 <- read_excel("2019 to 2023 school data.xlsx", sheet = "2023")
 
 data_2019 %>% is.na %>% table #NA 개수 확인
-data_2019[!complete.cases(data_2019),] %>% View #NA인 행 모두 추출
+data_2019[!complete.cases(data_2019),] %>% view #NA인 행 모두 추출, 확인결과 사고자학년만 NA
 
 
 data <- rbind(data_2019, data_2020)
@@ -41,10 +42,10 @@ data$year <- ifelse(str_sub(data$구분, 1, 1) == "A", 2019,
 data %>% head
 data %>% dim
 data %>% str
+
+
 data$학교급 %>% table
 
-
-data_2019$연도 <- 2019
 ggplot(data) +
  aes(x = 사고시간) +
  geom_bar(fill = "#112446")
