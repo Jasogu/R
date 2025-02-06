@@ -39,6 +39,9 @@ female = 성별 : 여자 1, 남자 0
 
 old = 나이 : 평균연령
 
+데이터 출처 = https://kosis.kr/statHtml/statHtml.do?orgId=118&tblId=DT_118N_PAYM32&conn_path=I3
+
+<br>
 
 ## Q-Q plot, 선형회귀분석
 y = 임금, x = experience, edu, female, old
