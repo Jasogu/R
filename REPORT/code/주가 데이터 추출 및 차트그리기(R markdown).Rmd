@@ -96,7 +96,7 @@ head(`005930.KS`)
 ```{r samsung-chart-daily, fig.keep='last'}
 chartSeries(`005930.KS`['2024-07-01::2025-01-01'], name = "Samsung Electronics Stock Price")
 addBBands()
-addSMA(5);addSMA(20, col='Yellow')
+addSMA(5);addSMA(20, col='Yellow');addMACD()
 ```
 
 <br>
