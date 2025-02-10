@@ -47,12 +47,12 @@ head(AAPL)
 ```
 
     ##               open    high     low   close    volume adjusted
-    ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.79603
+    ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.79601
     ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.08829
-    ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.66270
-    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.32099
-    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.48436
-    ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 75.04523
+    ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.66271
+    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.32097
+    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.48437
+    ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 75.04520
 
 <br>
 
@@ -82,7 +82,8 @@ getSymbols(c("000660.KS", "005930.KS"),
 Apple의 주가 차트에 20일과 50일 이동평균선을 추가
 
 ``` r
-chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)")
+chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
+            TA="addSMA(n=20); addSMA(n=50)")
 ```
 
 ![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
@@ -94,7 +95,7 @@ chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)"
 2020년 1월 1일부터 오늘까지 삼성전자 데이터(005930.KS)를 가져옴
 
 ``` r
-getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date()-2)
+getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
 ```
 
     ## [1] "005930.KS"
@@ -106,10 +107,10 @@ head(`005930.KS`)
 
     ##             open  high   low close   volume adjusted
     ## 2020-01-02 55500 56000 55000 55200 12993228 48494.80
-    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.36
-    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.36
+    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.37
+    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.37
     ## 2020-01-07 55700 56400 55600 55800 10009778 49021.93
-    ## 2020-01-08 56200 57400 55900 56800 23501171 49900.45
+    ## 2020-01-08 56200 57400 55900 56800 23501171 49900.46
     ## 2020-01-09 58400 58600 57400 58600 24102579 51481.80
 
 <br>
@@ -119,8 +120,7 @@ head(`005930.KS`)
 삼성전자의 주가 차트에 MACD, 볼린저밴드, 이평선 5 20일선 추가
 
 ``` r
-chartSeries(`005930.KS`, name = "Samsung Electronics Stock Price")
-addMACD()
+chartSeries(`005930.KS`['2024-07-01::2025-01-01'], name = "Samsung Electronics Stock Price")
 addBBands()
 addSMA(5);addSMA(20, col='Yellow')
 ```
@@ -129,25 +129,34 @@ addSMA(5);addSMA(20, col='Yellow')
 
 <br>
 
-## 주봉 및 월봉 데이터 변환과 차트
+## 주봉 및 월봉 데이터 변환과 차트(white theme)
 
 삼성전자 데이터를 주봉, 월봉 데이터로 변환한 후 각각 이동평균선(5일,
 10일)을 추가하여 차트를 그림
 
 ``` r
 samsung_weekly <- to.weekly(`005930.KS`)
-chartSeries(samsung_weekly, 
+samsung_weekly <- myfunc(samsung_weekly)
+chartSeries(samsung_weekly['2024-01-01::2025-01-01'], 
             name = "삼성전자 주봉 차트", 
-            TA = "addSMA(n=5); addSMA(n=10)")
+            theme = chartTheme("white"),
+            up.col = "red",
+            dn.col = "blue",
+            TA = "addSMA(n=5); addSMA(n=10); addVo()")
 ```
 
 ![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
 
 ``` r
 samsung_monthly <- to.monthly(`005930.KS`)
-chartSeries(samsung_monthly, 
+samsung_monthly <- myfunc(samsung_monthly)
+chartSeries(samsung_monthly['2020-01-01::2025-01-01'], 
             name = "삼성전자 월봉 차트", 
-            TA = "addSMA(n=5); addSMA(n=10)")
+            TA = "addSMA(n=5); addSMA(n=10)",
+            up.col = "red",
+            dn.col = "blue",
+            theme = chartTheme('white'))
+addVo()
 ```
 
 ![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
@@ -169,10 +178,10 @@ samsung_df %>% head
 
     ##         date  open  high   low close   volume adjusted
     ## 1 2020-01-02 55500 56000 55000 55200 12993228 48494.80
-    ## 2 2020-01-03 56000 56600 54900 55500 15422255 48758.36
-    ## 3 2020-01-06 54900 55600 54600 55500 10278951 48758.36
+    ## 2 2020-01-03 56000 56600 54900 55500 15422255 48758.37
+    ## 3 2020-01-06 54900 55600 54600 55500 10278951 48758.37
     ## 4 2020-01-07 55700 56400 55600 55800 10009778 49021.93
-    ## 5 2020-01-08 56200 57400 55900 56800 23501171 49900.45
+    ## 5 2020-01-08 56200 57400 55900 56800 23501171 49900.46
     ## 6 2020-01-09 58400 58600 57400 58600 24102579 51481.80
 
 ``` r
@@ -217,7 +226,7 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
    geom_line() +
    scale_color_manual(values = c("AAPL_normalized" = "red", "samsung_normalized" = "blue"),
                       labels = c("AAPL", "Samsung")) +
-   labs(title = "AAPL vs Samsung 정규화된 주가 비교",
+   labs(title = "AAPL vs Samsung 상승률 비교",
         x = "날짜",
         y = "상승률 (첫날 = 100%)",
         color = "회사") +

@@ -71,7 +71,8 @@ getSymbols(c("000660.KS", "005930.KS"),
 Apple의 주가 차트에 20일과 50일 이동평균선을 추가
 
 ```{r apple-chart}
-chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)")
+chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
+            TA="addSMA(n=20); addSMA(n=50)")
 ```
 
 <br>
@@ -81,7 +82,7 @@ chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)"
 2020년 1월 1일부터 오늘까지 삼성전자 데이터(005930.KS)를 가져옴
 
 ```{r load-samsung}
-getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date()-2)
+getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
 `005930.KS` <- myfunc(`005930.KS`)
 head(`005930.KS`)
 ```
@@ -93,30 +94,39 @@ head(`005930.KS`)
 삼성전자의 주가 차트에 MACD, 볼린저밴드, 이평선 5 20일선 추가
 
 ```{r samsung-chart-daily, fig.keep='last'}
-chartSeries(`005930.KS`, name = "Samsung Electronics Stock Price")
-addMACD()
+chartSeries(`005930.KS`['2024-07-01::2025-01-01'], name = "Samsung Electronics Stock Price")
 addBBands()
 addSMA(5);addSMA(20, col='Yellow')
 ```
 
 <br>
 
-## 주봉 및 월봉 데이터 변환과 차트
+## 주봉 및 월봉 데이터 변환과 차트(white theme)
 
 삼성전자 데이터를 주봉, 월봉 데이터로 변환한 후 각각 이동평균선(5일, 10일)을 추가하여 차트를 그림
 
-```{r samsung-chart-weekly}
+```{r samsung-chart-weekly, fig.keep='last'}
+
 samsung_weekly <- to.weekly(`005930.KS`)
-chartSeries(samsung_weekly, 
+samsung_weekly <- myfunc(samsung_weekly)
+chartSeries(samsung_weekly['2024-01-01::2025-01-01'], 
             name = "삼성전자 주봉 차트", 
-            TA = "addSMA(n=5); addSMA(n=10)")
+            theme = chartTheme("white"),
+            up.col = "red",
+            dn.col = "blue",
+            TA = "addSMA(n=5); addSMA(n=10); addVo()")
 ```
 
-```{r samsung-chart-monthly}
+```{r samsung-chart-monthly, fig.keep='last'}
 samsung_monthly <- to.monthly(`005930.KS`)
-chartSeries(samsung_monthly, 
+samsung_monthly <- myfunc(samsung_monthly)
+chartSeries(samsung_monthly['2020-01-01::2025-01-01'], 
             name = "삼성전자 월봉 차트", 
-            TA = "addSMA(n=5); addSMA(n=10)")
+            TA = "addSMA(n=5); addSMA(n=10)",
+            up.col = "red",
+            dn.col = "blue",
+            theme = chartTheme('white'))
+addVo()
 ```
 
 <br>
@@ -164,7 +174,7 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
    geom_line() +
    scale_color_manual(values = c("AAPL_normalized" = "red", "samsung_normalized" = "blue"),
                       labels = c("AAPL", "Samsung")) +
-   labs(title = "AAPL vs Samsung 정규화된 주가 비교",
+   labs(title = "AAPL vs Samsung 상승률 비교",
         x = "날짜",
         y = "상승률 (첫날 = 100%)",
         color = "회사") +
