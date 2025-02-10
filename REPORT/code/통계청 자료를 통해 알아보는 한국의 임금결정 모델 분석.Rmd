@@ -7,7 +7,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-knitr::opts_chunk$set(fig.path = "images/")
+knitr::opts_chunk$set(fig.path = "images/통계청 자료를 통해 알아보는 한국의 임금결정 모델 분석/")
 ```
 
 

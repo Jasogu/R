@@ -6,7 +6,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-knitr::opts_chunk$set(fig.path = "images/")
+knitr::opts_chunk$set(fig.path = "images/주가 데이터 추출 및 차트그리기(R markdown)/")
 
 ```
 
@@ -29,6 +29,12 @@ library(quantmod)
 library(tidyverse)
 library(lubridate)
 theme_set(theme_grey(base_family='NanumGothic'))
+
+#열 이름 변경
+myfunc <- function(x) {
+   colnames(x) <- c('open', 'high', 'low', 'close', 'volume', 'adjusted')
+   invisible(x)
+}
 ```
 
 <br>
@@ -39,6 +45,7 @@ theme_set(theme_grey(base_family='NanumGothic'))
 
 ```{r load-apple}
 getSymbols("AAPL", from = "2020-01-01", to = Sys.Date()-1)
+AAPL <- myfunc(AAPL)
 head(AAPL)
 ```
 
@@ -53,6 +60,8 @@ getSymbols(c("000660.KS", "005930.KS"),
            src = "yahoo", 
            from = "2023-01-01", 
            to = Sys.Date())
+`000660.KS` <- myfunc(`000660.KS`)
+`005930.KS` <- myfunc(`005930.KS`)
 ```
 
 <br>
@@ -73,6 +82,7 @@ chartSeries(AAPL, name="Apple Inc. Stock Price", TA="addSMA(n=20); addSMA(n=50)"
 
 ```{r load-samsung}
 getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date()-2)
+`005930.KS` <- myfunc(`005930.KS`)
 head(`005930.KS`)
 ```
 
@@ -80,10 +90,13 @@ head(`005930.KS`)
 
 ## 삼성전자 주식 차트: 종가와 이동평균선(20일, 50일)
 
-삼성전자의 주가 차트에 20일과 50일 이동평균선을 추가
+삼성전자의 주가 차트에 MACD, 볼린저밴드, 이평선 5 20일선 추가
 
-```{r samsung-chart-daily}
-chartSeries(`005930.KS`, name = "Samsung Electronics Stock Price", TA = "addSMA(n=20); addSMA(n=50)")
+```{r samsung-chart-daily, fig.keep='last'}
+chartSeries(`005930.KS`, name = "Samsung Electronics Stock Price")
+addMACD()
+addBBands()
+addSMA(5);addSMA(20, col='Yellow')
 ```
 
 <br>
