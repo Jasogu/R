@@ -30,6 +30,7 @@ if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
 1. 하이픈3개 이상 or 별표 3개 이상 사용시 수평선을 그림.
 1. 글 뒤에 하이픈 newline 줄 바꿈
 1. 하이픈 공백 두 번 줄 바꿈
+1. fig.keep='last' 같은 청크에서 여러개의 이미지가 출력될 경우 마지막 이미지만 출력
 # html을 pdf로 변환하는 코드
 
 
