@@ -96,10 +96,23 @@ df$회사명 %>% unique %>% length()
 # 재무상태표와 손익계산서 차집합(재무상태표는 있는데 손익계산서엔 없음)
 setdiff(df_bs$회사명, df_pl$회사명)
 
-# 재무상태표와 손익계산서의 교집합을 포함하지 않는 기업 제거
+# 재무상태표와 손익계산서의 교집합을 포함하지 않는 기업 제거 후 통일
 fs_name <- intersect(df_bs$회사명, df_pl$회사명)
 df <- df %>% filter(회사명 %in% fs_name)
-df %>% str
+df_bs <- df_bs %>% filter(회사명 %in% fs_name)
+df_pl <- df_pl %>% filter(회사명 %in% fs_name)
+
+df_bs %>% select(종목코드, 회사명, 업종명, 항목명, 당기, 전기, 전전기) %>% head
+df_pl %>% select(종목코드, 회사명, 업종명, 항목명, 당기, 전기, 전전기) %>% head
+
+df_bs$항목명 <- gsub(" ", "", df_bs$항목명)
+df_pl$항목명 <- gsub(" ", "", df_pl$항목명)
+
+df_bs$항목명 %>% table %>% .[.>100] %>% sort
+
 
 # 업데이트 예정
 # 유동비율, 부채비율, ROA, ROE, 자산총액, 매출액, 매출 성장률, 이자보상비율(영업이익/이자비용), 매출액영업이익률
+
+
+
