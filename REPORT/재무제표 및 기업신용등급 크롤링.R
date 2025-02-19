@@ -67,35 +67,41 @@ get_fnguide_ratio <- function(code) {
 }
 
 # 예시 실행: 삼성전자 (코드 '005930')의 재무데이터 가져오기
-data_snap <- get_fnguide("005930")
-data_ratio <- get_fnguide_ratio("005930")
+data_snap_raw <- get_fnguide("005930")
+data_ratio_raw <- get_fnguide_ratio("005930")
 
 # 11:연결/전체 12:연결/연간 13:연결/분기, 14:별도/전체 15:별도/연간 16:별도/분기
-data_snap[[6]] # CP 신용등급
-data_snap[[7]] # Bond 신용등급
+data_snap_raw[[6]] # CP 신용등급
+data_snap_raw[[7]] # Bond 신용등급
 
-
-#열 이름 중복 제거 및 추정분기 제거
-data_ratio <- data_ratio[[1]][c(2, 5, 8, 11, 14, 17, 22, 24, 25, 34, 40, 52, 55, 58, 62, 65, 68, 71),c(-6)]
+#열 이름 중복 제거 및 추정분기 제거, 계정과목 선택 후 이름변경
+data_ratio <- data_ratio_raw[[1]][c(2, 5, 8, 11, 14, 17, 22, 24, 25, 34, 40, 52, 55, 58, 62, 65, 68, 71),c(-6)]
 data_ratio[1:18,1] <- c("유동비율", "당좌비율", "부채비율", "유보율", "순차입금비율",
                           "이자보상배율", "자산총계", "매출액증가율", "매출액", "EBITDA",
                           "매출총이익률", "ROA", "ROE", "ROIC", "총자산회전율",
                           "총부채회전율", "총자본회전율", "순운전자본회전율")
 
 # 분석에 사용할 수 있게 문자형을 숫자형태로 변환
-data <- data_ratio %>%
+data_ratio <- data_ratio %>%
    mutate(across(2:5, ~ as.numeric(gsub(",", "", .))))
 
 
-data_ratio_transposed <- data_ratio %>% 
-   pivot_longer(cols = -`IFRS(연결)`, names_to = "날짜", values_to = "값") %>% 
-   pivot_wider(names_from = `IFRS(연결)`, values_from = 값)
+# 순차입금비율이 음수일 경우 NA로 되는 경우(삼성전자), 식을 직접 대입해 음수로 표기. (순차입부채/자본총계)*100
+borrowings <- data_ratio_raw[[1]][c(15, 21),-6]
+borrowings <- borrowings %>%
+   mutate(across(2:5, ~ as.numeric(gsub(",", "", .))))
+borrowings_ratio <- (borrowings[1,-1] / borrowings[2,-1])*100
+borrowings_ratio[,1]
 
-to_add <- colnames(data_ratio_transposed)
-new_columns <- setNames(vector("list", length(to_add)), to_add)
+data <- data_ratio %>%
+   mutate(
+      `2020/12` = replace_na(`2020/12`, borrowings_ratio[,1]),
+      `2021/12` = replace_na(`2021/12`, borrowings_ratio[,2]),
+      `2022/12` = replace_na(`2022/12`, borrowings_ratio[,3]),
+      `2023/12` = replace_na(`2023/12`, borrowings_ratio[,4])
+   )
 
-for (col in to_add) {
-   df[[col]] <- NA
-}
+print(data)
 
-#업데이트 예정.삼성전자 순차입금비율 음수라서 데이터 없는 것 수정해야 함 + df에 열변수 18개 추가 후 데이터 크롤링해서 데이터 채우는 거 반복문 추가해야 함
+
+#업데이트 예정
