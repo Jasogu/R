@@ -156,7 +156,6 @@ df <- df[-which(df$회사명 == multiple_names$회사명[3])[2],]
 unique(df$회사명[duplicated(df$회사명)])
 
 
-
 # 예시 실행: 삼성전자 (코드 '005930')의 재무데이터 가져오기
 data_snap_raw <- get_fnguide("005930")
 data_ratio_raw <- get_fnguide_ratio("005930")
@@ -176,7 +175,6 @@ data_ratio[1:18,1] <- c("유동비율", "당좌비율", "부채비율", "유보�
 data_ratio <- data_ratio %>%
    mutate(across(2:5, ~ as.numeric(gsub(",", "", .))))
 
-
 # 순차입금비율이 음수일 경우 NA로 되는 경우(삼성전자), 식을 직접 대입해 음수로 표기. (순차입부채/자본총계)*100
 borrowings <- data_ratio_raw[[1]][c(15, 21),-6]
 borrowings <- borrowings %>%
@@ -194,13 +192,6 @@ data <- data_ratio %>%
 
 print(data)
 
-#업데이트 예정
-
-
-
-
-
-
 # 행렬 전환
 data_ratio_transposed <- data_ratio %>% 
    pivot_longer(cols = -`IFRS(연결)`, names_to = "날짜", values_to = "값") %>% 
@@ -217,7 +208,6 @@ for (col in to_add) {
 df %>% head
 
 
-
-#업데이트 예정.삼성전자 순차입금비율 음수라서 데이터 없는 것 수정해야 함 + df에 열변수 18개 추가 후 데이터 크롤링해서 데이터 채우는 거 반복문 추가해야 함
+#업데이트 예정, R markdown 제작 예정. df 계정과목 데이터 채우는 거 반복문 추가해야 함
 
 

@@ -1,27 +1,19 @@
----
-title: "Quantmod library 코드"
-author: "김홍식"
-output: github_document
----
+Quantmod library 코드
+================
+김홍식
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-knitr::opts_chunk$set(fig.path = "data/images/주가 데이터 추출 및 차트그리기(R markdown)/")
-
-```
-
-<br>
-<span style='background-color: #ffdce0'>
-주의 : 불러온 주가 데이터의 변수명이 숫자로 시작하므로 사용할 때 ` (물결표 버튼)으로 감싸서 사용해야 한다.
-</span>
+<br> <span style="background-color: #ffdce0"> 주의 : 불러온 주가
+데이터의 변수명이 숫자로 시작하므로 사용할 때 \` (물결표 버튼)으로
+감싸서 사용해야 한다. </span>
 
 <br>
 
 ## 패키지 설치 및 로드
 
-먼저 필요한 패키지를 설치(설치되어 있지 않은 경우) 및 로드하고, ggplot2 한글 깨짐 문제를 해결하기 위해 나눔고딕 폰트를 설정.
+먼저 필요한 패키지를 설치(설치되어 있지 않은 경우) 및 로드하고, ggplot2
+한글 깨짐 문제를 해결하기 위해 나눔고딕 폰트를 설정.
 
-```{r load-packages}
+``` r
 if (!requireNamespace("quantmod", quietly = TRUE)) {
    install.packages("quantmod")
 }
@@ -41,25 +33,44 @@ myfunc <- function(x) {
 
 ## Apple 주식 데이터 로드 및 확인
 
-2020년 1월 1일부터 오늘까지의 Apple Inc. 주식 데이터 로드
+2020년 1월 1일부터 오늘까지의 Apple Inc. 주식 데이터 로드
 
-```{r load-apple}
+``` r
 getSymbols("AAPL", from = "2020-01-01", to = Sys.Date()-1)
+```
+
+    ## [1] "AAPL"
+
+``` r
 AAPL <- myfunc(AAPL)
 head(AAPL)
 ```
+
+    ##               open    high     low   close    volume adjusted
+    ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.71606
+    ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.00912
+    ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.58291
+    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.24153
+    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.40365
+    ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 74.96280
 
 <br>
 
 ## 아래와 같이 두 개 이상 동시에 로드 가능
 
-야후 파이낸스 데이터를 이용해 2023년 1월 1일부터 오늘까지 삼성전자(005930.KS)와 다른 종목(000660.KS) 데이터 로드
+야후 파이낸스 데이터를 이용해 2023년 1월 1일부터 오늘까지
+삼성전자(005930.KS)와 다른 종목(000660.KS) 데이터 로드
 
-```{r load-korean-stocks}
+``` r
 getSymbols(c("000660.KS", "005930.KS"), 
            src = "yahoo", 
            from = "2023-01-01", 
            to = Sys.Date())
+```
+
+    ## [1] "000660.KS" "005930.KS"
+
+``` r
 `000660.KS` <- myfunc(`000660.KS`)
 `005930.KS` <- myfunc(`005930.KS`)
 ```
@@ -70,10 +81,12 @@ getSymbols(c("000660.KS", "005930.KS"),
 
 Apple의 주가 차트에 20일과 50일 이동평균선을 추가
 
-```{r apple-chart}
+``` r
 chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
             TA="addSMA(n=20); addSMA(n=50)")
 ```
+
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
 
 <br>
 
@@ -81,11 +94,24 @@ chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
 
 2020년 1월 1일부터 오늘까지 삼성전자 데이터(005930.KS)를 가져옴
 
-```{r load-samsung}
+``` r
 getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
+```
+
+    ## [1] "005930.KS"
+
+``` r
 `005930.KS` <- myfunc(`005930.KS`)
 head(`005930.KS`)
 ```
+
+    ##             open  high   low close   volume adjusted
+    ## 2020-01-02 55500 56000 55000 55200 12993228 48494.80
+    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.36
+    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.36
+    ## 2020-01-07 55700 56400 55600 55800 10009778 49021.92
+    ## 2020-01-08 56200 57400 55900 56800 23501171 49900.45
+    ## 2020-01-09 58400 58600 57400 58600 24102579 51481.80
 
 <br>
 
@@ -93,20 +119,22 @@ head(`005930.KS`)
 
 삼성전자의 주가 차트에 MACD, 볼린저밴드, 이평선 5 20일선 추가
 
-```{r samsung-chart-daily, fig.keep='last'}
+``` r
 chartSeries(`005930.KS`['2024-07-01::2025-01-01'], name = "Samsung Electronics Stock Price")
 addBBands()
 addSMA(5);addSMA(20, col='Yellow');addMACD()
 ```
 
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-daily-1.png)<!-- -->
+
 <br>
 
 ## 주봉 및 월봉 데이터 변환과 차트(white theme)
 
-삼성전자 데이터를 주봉, 월봉 데이터로 변환한 후 각각 이동평균선(5일, 10일)을 추가하여 차트를 그림
+삼성전자 데이터를 주봉, 월봉 데이터로 변환한 후 각각 이동평균선(5일,
+10일)을 추가하여 차트를 그림
 
-```{r samsung-chart-weekly, fig.keep='last'}
-
+``` r
 samsung_weekly <- to.weekly(`005930.KS`)
 samsung_weekly <- myfunc(samsung_weekly)
 chartSeries(samsung_weekly['2024-01-01::2025-01-01'], 
@@ -117,7 +145,9 @@ chartSeries(samsung_weekly['2024-01-01::2025-01-01'],
             TA = "addSMA(n=5); addSMA(n=10); addVo()")
 ```
 
-```{r samsung-chart-monthly, fig.keep='last'}
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
+
+``` r
 samsung_monthly <- to.monthly(`005930.KS`)
 samsung_monthly <- myfunc(samsung_monthly)
 chartSeries(samsung_monthly['2020-01-01::2025-01-01'], 
@@ -129,18 +159,32 @@ chartSeries(samsung_monthly['2020-01-01::2025-01-01'],
 addVo()
 ```
 
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
+
 <br>
 
 ## 데이터 프레임으로 변환 및 정규화
 
-각 종목의 데이터를 날짜 포함 데이터 프레임으로 변환한 후, 종가만 추출하고 두 데이터를 날짜 기준으로 합침(교집합). 이후 첫날의 종가를 기준으로 정규화하여 비교
+각 종목의 데이터를 날짜 포함 데이터 프레임으로 변환한 후, 종가만
+추출하고 두 데이터를 날짜 기준으로 합침(교집합). 이후 첫날의 종가를
+기준으로 정규화하여 비교
 
-```{r data-preparation}
+``` r
 # 데이터 프레임으로 변환
 apple_df <- data.frame(date=index(AAPL), coredata(AAPL))
 samsung_df <- data.frame(date=index(`005930.KS`), coredata(`005930.KS`))
 samsung_df %>% head
+```
 
+    ##         date  open  high   low close   volume adjusted
+    ## 1 2020-01-02 55500 56000 55000 55200 12993228 48494.80
+    ## 2 2020-01-03 56000 56600 54900 55500 15422255 48758.36
+    ## 3 2020-01-06 54900 55600 54600 55500 10278951 48758.36
+    ## 4 2020-01-07 55700 56400 55600 55800 10009778 49021.92
+    ## 5 2020-01-08 56200 57400 55900 56800 23501171 49900.45
+    ## 6 2020-01-09 58400 58600 57400 58600 24102579 51481.80
+
+``` r
 # 종가만 추출 후 합치기 (Apple: 5번째 열, Samsung: 5번째 열)
 apple_df_close <- apple_df %>% select(1, 5)
 samsung_df_close <- samsung_df %>% select(1, 5)
@@ -148,7 +192,14 @@ samsung_df_close <- samsung_df %>% select(1, 5)
 data <- merge(apple_df_close, samsung_df_close, by = "date")
 colnames(data) <- c("date", "AAPL", "samsung")
 str(data)
+```
 
+    ## 'data.frame':    1216 obs. of  3 variables:
+    ##  $ date   : Date, format: "2020-01-02" "2020-01-03" ...
+    ##  $ AAPL   : num  75.1 74.4 74.9 74.6 75.8 ...
+    ##  $ samsung: num  55200 55500 55500 55800 56800 58600 59500 60000 60000 59000 ...
+
+``` r
 # 날짜 형식 변환
 data$date <- as.Date(data$date)
 
@@ -167,9 +218,10 @@ data_long <- data_normalized %>%
 
 ## 정규화된 주가 상승률 비교 차트
 
-정규화된 주가 데이터를 이용하여 Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 설정)
+정규화된 주가 데이터를 이용하여 Apple과 삼성전자의 주가 상승률 비교
+시각화. (첫날을 100%로 설정)
 
-```{r normalized-chart, fig.height=6, fig.width=8}
+``` r
 ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
    geom_line() +
    scale_color_manual(values = c("AAPL_normalized" = "red", "samsung_normalized" = "blue"),
@@ -182,3 +234,5 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
    scale_y_continuous(labels = scales::percent) +
    theme(legend.position = "bottom")
 ```
+
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/normalized-chart-1.png)<!-- -->
