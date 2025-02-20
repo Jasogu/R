@@ -4,6 +4,14 @@ library(stringr)
 library(readr)
 library(httr)
 library(rvest)
+library(randomForest)
+library(gbm) #gradient boost
+library(nnet) #ann
+library(e1071) #svd
+library(caret)
+library(MASS)
+
+# 분석 시 백분율은 0~1 사이로 전환
 
 # 신용등급 데이터 FnGuide : https://comp.fnguide.com/SVO2/ASP/SVD_CreditScore.asp?pGB=1&gicode=A196170&cID=&MenuYn=Y&ReportGB=&NewMenuID=501&stkGb=701
 
@@ -205,18 +213,17 @@ for (i in 1:nrow(df)){
                                                                                                   "총부채회전율", "총자본회전율", "순운전자본회전율")
       
       firm <- firm %>% mutate(across(where(is.numeric), ~ifelse(. == 0, 0.01, .))) # 0인 값은 0.01로 바꿈(Inf 문제)
-      finance_100 <- which(firm[, 1] %>% pull %in% c("당좌비율", "부채비율", "유보율", "순차입금비율", "매출총이익율", "ROA", "ROE", "ROIC")) # 나누고 100곱하기
-      finance_1 <- which(firm[, 1] %>% pull %in% c("이자보상배율", "총자산회전율", "총부채회전율", "총자본회전율", "순운전자본회전율")) # 나누기만
-      finance_sales <- which(firm[, 1] %>% pull %in% "매출액증가율") # ((매출액 / 매출액(전년)) -1) *100
-      finance_sales <- which(firm[, 1] %in% "매출액증가율") # ((매출액 / 매출액(전년)) -1) *100
+      finance_100 <- which(firm[, 1] %>% pull %in% c("당좌비율", "부채비율", "유보율", "순차입금비율", "매출총이익율", "ROA", "ROE", "ROIC"))
+      finance_1 <- which(firm[, 1] %>% pull %in% c("이자보상배율", "총자산회전율", "총부채회전율", "총자본회전율", "순운전자본회전율"))
+      finance_sales <- which(firm[, 1] %>% pull %in% "매출액증가율") # ((매출액 / 매출액(전년)) -1)
       
       for (a in finance_100){
-         firm[a, -1] <- (firm[a+1, -1] / firm[a+2, -1])*100
+         firm[a, -1] <- (firm[a+1, -1] / firm[a+2, -1])
       }
       for (b in finance_1){
          firm[b, -1] <- (firm[b+1, -1] / firm[b+2, -1])
       }
-      firm[finance_sales, -1] <- ((firm[finance_sales+1, -1] / firm[finance_sales+2, -1])-1)*100
+      firm[finance_sales, -1] <- ((firm[finance_sales+1, -1] / firm[finance_sales+2, -1])-1)
       firm <- firm[which(firm$`IFRS(연결)` %in% c("유동비율", "당좌비율", "부채비율", "유보율", "순차입금비율",
                                                 "이자보상배율", "자산총계", "매출액증가율", "매출액", "EBITDA",
                                                 "매출총이익률", "ROA", "ROE", "ROIC", "총자산회전율",
@@ -226,23 +233,78 @@ for (i in 1:nrow(df)){
       for (k in 1:18){
          df[i, k+5] <- firm[k, 5] # 6부터 시작(유동비율)
       }
-      Sys.sleep(0.2)  # 0.2초 동안 대기
+      Sys.sleep(0.1)  # 0.1초 동안 대기
    }) # 경고 메시지 억제 종료
 }
 
-# 수동 전처리 필요-----
-#df[!complete.cases(df), ] %>% View
-df %>% View
-
-# 금융, 보험, 부동산펀드 등 일부 종목 제외----
-# 부동산 펀드, 일부 보험 및 금융 제외(del_name)
-#del_name <- df %>% filter(is.na(EBITDA))
-#df <- df[!df$종목코드 %in% del_name$종목코드,]
-
-#df[!complete.cases(df), ] %>% head
-#na_name <- colSums(is.na(df))[colSums(is.na(df))>0]
-#na_name
+# 금융, 보험, 부동산 펀드 등 제외. OCI 제외(신규)
+df[!complete.cases(df), ] %>% head # NA값들 확인
+df <- df[complete.cases(df), ]
 
 
-#업데이트 예정, R markdown 제작 예정
+# 모델-----
+df_raw <- df
+
+df$Bond_Mean <- df$Bond_Mean %>% as.factor()
+df$업종 <- df$업종 %>% as.factor()
+df <- df %>% select(-종목코드, -회사명, -시장)
+df <- df %>% select(-업종)
+
+# Bond_Mean을 제외한 모든 열에 대해 min–max 정규화
+df_scaled <- df %>% 
+   mutate(across(-Bond_Mean, 
+                 ~ (. - min(., na.rm = TRUE)) / 
+                    (max(., na.rm = TRUE) - min(., na.rm = TRUE))))
+
+# Bond_Mean을 제외한 모든 열에 대해 Z-Score 표준화
+df_standardized <- df_scaled %>%
+   mutate(across(-Bond_Mean, 
+                 ~ (. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
+
+# 등급 순서 정의 (낮은 등급부터 높은 등급까지)
+rating_order <- c("D", "C", "CC", "CCC-", "CCC", "CCC+",
+                  "B-","B","B+","BB-","BB","BB+","BBB-","BBB","BBB+",
+                  "A-","A","A+","AA-","AA","AA+","AAA")
+
+# Bond_Mean 변수를 ordered factor로 변환한 후 숫자형으로 변환 (D=1, AAA=22)
+df_standardized$Bond_Mean <- factor(df_standardized$Bond_Mean, levels = rating_order, ordered = TRUE)
+df_standardized$Bond_Mean <- as.numeric(df_standardized$Bond_Mean)
+
+# 50번 반복하여 학습/테스트 분할 후 평균 모델 평가
+n_iter <- 50
+correlations <- numeric(n_iter)
+rmses <- numeric(n_iter)
+
+for (i in 1:n_iter) {
+   # 데이터 분할: 학습 80%, 테스트 나머지
+   train_idx <- sample(1:nrow(df_standardized), size = 0.8 * nrow(df_standardized))
+   train <- df_standardized[train_idx, ]
+   test <- df_standardized[-train_idx, ]
+   
+   # RandomForest 모델 학습 (회귀 모델로 자동 인식됨)
+   model_rf <- randomForest(Bond_Mean ~ ., data = train, importance = TRUE, proximity = TRUE, mtry = n)
+   
+   # 테스트 데이터에 대한 예측 수행
+   pred <- predict(model_rf, newdata = test)
+   
+   # 실제값과 예측값에 대한 상관계수 및 RMSE 계산
+   correlation <- cor(test$Bond_Mean, pred)
+   rmse <- sqrt(mean((test$Bond_Mean - pred)^2))
+   
+   correlations[i] <- correlation
+   rmses[i] <- rmse
+}
+
+# 50회 반복 결과의 평균 계산
+mean_correlation <- mean(correlations)
+mean_rmse <- mean(rmses)
+
+print(mean_correlation)
+print(mean_rmse)
+
+
+
+
+
+# 업데이트 예정, R markdown 제작 예정----
 
