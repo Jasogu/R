@@ -11,6 +11,7 @@ df <- read_excel("credit_raw_data.xlsx", sheet = "Sheet1")
 df$Bond_Mean <- 0
 colnames(df)[1] <- "회사명"
 
+# 함수선언 ----
 convert_rating <- function(rating) {
    if (is.na(rating)) {
       return(NA)  # NA 값 처리
@@ -44,7 +45,6 @@ convert_numeric_to_rating <- function(numeric_rating) {
    )
 }
 
-
 #https://comp.fnguide.com/SVO2/ASP/SVD_FinanceRatio.asp?pGB=1&gicode=A005930&cID=&MenuYn=Y&ReportGB=&NewMenuID=104&stkGb=701
 get_fnguide_ratio <- function(code) {
    # 파라미터 목록 작성
@@ -75,8 +75,60 @@ get_fnguide_ratio <- function(code) {
    
    return(tables)
 }
+# 함수선언 종료
 
-# 신용등급 비교 및 Bond_Mean 채우기
+
+
+# 종목코드 추출 ------
+gen_otp_url <- 'http://data.krx.co.kr/comm/fileDn/GenerateOTP/generate.cmd'
+gen_otp_data <- list(
+   locale = 'ko_KR',
+   mktId = 'ALL',
+   trdDd = '20250220',
+   share = '1',
+   money = '1',
+   csvxls_isNo = 'false',
+   name = 'fileDown',
+   url = 'dbms/MDC/STAT/standard/MDCSTAT01501',
+   format = 'xlsx'  # 파일 형식을 xlsx로 지정
+)
+
+# 2. OTP 생성 요청 및 코드 추출
+otp <- POST(gen_otp_url, query = gen_otp_data) %>%
+   read_html() %>%
+   html_text()
+
+cat("OTP Code:", otp, "\n")  # OTP 코드 확인
+
+# 3. 실제 데이터 다운로드 URL
+down_url <- 'http://data.krx.co.kr/comm/fileDn/download_excel/download.cmd'
+
+# 4. 다운로드 요청 및 파일 저장
+down_data <- list(
+   code = otp  # OTP 코드 전달
+)
+
+# 5. HTTP 요청 헤더 설정 (User-Agent, Referer)
+headers = c(
+   `User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+   `Referer` = "http://data.krx.co.kr/contents/MDC/STAT/standard/MDCSTAT01501.jsp"  # 변경된 URL
+)
+
+# 원하는 파일 이름 지정
+custom_file_name <- "firm_names.xlsx"
+
+# 파일 다운로드 부분 수정
+response <- POST(down_url, query = down_data, add_headers(.headers=headers),
+                 write_disk(custom_file_name, overwrite = TRUE))
+
+firm_names <- read_excel("firm_names.xlsx", sheet = "Sheet1")
+file.remove('firm_names.xlsx')
+# 종목코드 추출 종료
+
+
+
+
+# 신용등급 비교 및 Bond_Mean 채우기----
 for (i in 1:nrow(df)) {
    # 각 신용등급을 숫자로 변환
    kis <- convert_rating(df$KIS_Bond[i])
@@ -101,10 +153,7 @@ for (i in 1:nrow(df)) {
    }
 }
 
-
-
-
-# 신용등급 엑셀 전처리 시작-----------------
+# 신용등급 엑셀 전처리
 df <- df %>% select(회사명, 업종, 시장, Bond_Mean)
 
 # Bond_Mean이 NA, CANC인 행 제거
@@ -128,20 +177,72 @@ unique(df$회사명[duplicated(df$회사명)])
 
 # df에 종목코드, 계정과목 추가
 df <- cbind(종목코드 = NA, df)
+
+
 df$종목코드 <- firm_names$종목코드[match(df$회사명, firm_names$종목명)]
 new_columns <- c("유동비율", "당좌비율", "부채비율", "유보율", "순차입금비율",
                  "이자보상배율", "자산총계", "매출액증가율", "매출액", "EBITDA",
                  "매출총이익률", "ROA", "ROE", "ROIC", "총자산회전율",
                  "총부채회전율", "총자본회전율", "순운전자본회전율")
 df <- cbind(df, setNames(data.frame(matrix(NA, nrow = nrow(df), ncol = length(new_columns))), new_columns))
-# 신용등급 엑셀 전처리 끝------------------------
 
 
 
+# 반복문 -----
+# Fnguide 에서 재무비율, 재무데이터 크롤링 후 df에 대입
+for (i in 1:nrow(df)){
+   suppressWarnings({  # 경고 메시지 억제 시작
+      firm_raw <- get_fnguide_ratio(df[i,1])
+      if (nrow(firm_raw[[1]]) != 73) {
+         cat("Warning: Insufficient data for company", df[i,1], ". Skipping.\n")
+         next  # 다음 반복으로 넘어감
+      }
+      firm <- firm_raw[[1]][c(2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 24, 25, 26, 34, 40, 41, 42, 52, 53, 54, 55, 56, 57, 58, 59, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73),]
+      firm <- firm %>% select(-6) %>% mutate(across(2:5, ~ as.numeric(gsub(",", "", .))))
+      firm[c(1, 2, 5, 8, 11, 14, 17, 18, 19, 21, 22, 25, 28, 31, 34, 37, 40, 43), 1] <- c("유동비율", "당좌비율", "부채비율", "유보율", "순차입금비율",
+                                                                                                  "이자보상배율", "자산총계", "매출액증가율", "매출액", "EBITDA",
+                                                                                                  "매출총이익률", "ROA", "ROE", "ROIC", "총자산회전율",
+                                                                                                  "총부채회전율", "총자본회전율", "순운전자본회전율")
+      
+      firm <- firm %>% mutate(across(where(is.numeric), ~ifelse(. == 0, 0.01, .))) # 0인 값은 0.01로 바꿈(Inf 문제)
+      finance_100 <- which(firm[, 1] %>% pull %in% c("당좌비율", "부채비율", "유보율", "순차입금비율", "매출총이익율", "ROA", "ROE", "ROIC")) # 나누고 100곱하기
+      finance_1 <- which(firm[, 1] %>% pull %in% c("이자보상배율", "총자산회전율", "총부채회전율", "총자본회전율", "순운전자본회전율")) # 나누기만
+      finance_sales <- which(firm[, 1] %>% pull %in% "매출액증가율") # ((매출액 / 매출액(전년)) -1) *100
+      finance_sales <- which(firm[, 1] %in% "매출액증가율") # ((매출액 / 매출액(전년)) -1) *100
+      
+      for (a in finance_100){
+         firm[a, -1] <- (firm[a+1, -1] / firm[a+2, -1])*100
+      }
+      for (b in finance_1){
+         firm[b, -1] <- (firm[b+1, -1] / firm[b+2, -1])
+      }
+      firm[finance_sales, -1] <- ((firm[finance_sales+1, -1] / firm[finance_sales+2, -1])-1)*100
+      firm <- firm[which(firm$`IFRS(연결)` %in% c("유동비율", "당좌비율", "부채비율", "유보율", "순차입금비율",
+                                                "이자보상배율", "자산총계", "매출액증가율", "매출액", "EBITDA",
+                                                "매출총이익률", "ROA", "ROE", "ROIC", "총자산회전율",
+                                                "총부채회전율", "총자본회전율", "순운전자본회전율")), ][-12, ]
+      
+      # df에 데이터 집어넣기
+      for (k in 1:18){
+         df[i, k+5] <- firm[k, 5] # 6부터 시작(유동비율)
+      }
+      Sys.sleep(0.2)  # 0.2초 동안 대기
+   }) # 경고 메시지 억제 종료
+}
+
+# 수동 전처리 필요-----
+#df[!complete.cases(df), ] %>% View
+df %>% View
+
+# 금융, 보험, 부동산펀드 등 일부 종목 제외----
+# 부동산 펀드, 일부 보험 및 금융 제외(del_name)
+#del_name <- df %>% filter(is.na(EBITDA))
+#df <- df[!df$종목코드 %in% del_name$종목코드,]
+
+#df[!complete.cases(df), ] %>% head
+#na_name <- colSums(is.na(df))[colSums(is.na(df))>0]
+#na_name
 
 
-
-
-
-#업데이트 예정, R markdown 제작 예정. df 계정과목 데이터 채우는 거 반복문 추가해야 함
+#업데이트 예정, R markdown 제작 예정
 
