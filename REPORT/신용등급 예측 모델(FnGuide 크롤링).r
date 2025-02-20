@@ -208,6 +208,8 @@ for (col in to_add) {
 df %>% head
 
 
+
+
 #업데이트 예정, R markdown 제작 예정. df 계정과목 데이터 채우는 거 반복문 추가해야 함
 
 
