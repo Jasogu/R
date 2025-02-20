@@ -5,6 +5,8 @@ library(readr)
 library(httr)
 library(rvest)
 
+# 신용등급 데이터 FnGuide : https://comp.fnguide.com/SVO2/ASP/SVD_CreditScore.asp?pGB=1&gicode=A196170&cID=&MenuYn=Y&ReportGB=&NewMenuID=501&stkGb=701
+
 df <- read_excel("credit_raw_data.xlsx", sheet = "Sheet1")
 df$Bond_Mean <- 0
 colnames(df)[1] <- "회사명"
@@ -156,6 +158,7 @@ df <- df[-which(df$회사명 == multiple_names$회사명[3])[2],]
 unique(df$회사명[duplicated(df$회사명)])
 
 
+
 # 예시 실행: 삼성전자 (코드 '005930')의 재무데이터 가져오기
 data_snap_raw <- get_fnguide("005930")
 data_ratio_raw <- get_fnguide_ratio("005930")
@@ -180,7 +183,6 @@ borrowings <- data_ratio_raw[[1]][c(15, 21),-6]
 borrowings <- borrowings %>%
    mutate(across(2:5, ~ as.numeric(gsub(",", "", .))))
 borrowings_ratio <- (borrowings[1,-1] / borrowings[2,-1])*100
-borrowings_ratio[,1]
 
 data <- data_ratio %>%
    mutate(
@@ -204,12 +206,16 @@ new_columns <- setNames(vector("list", length(to_add)), to_add)
 for (col in to_add) {
    df[[col]] <- NA
 }
+df <- df %>% select(-날짜)
 
-df %>% head
+# df에 종목코드 추가
+df <- cbind(종목코드 = NA, df)
+df$종목코드 <- firm_names$종목코드[match(df$회사명, firm_names$종목명)]
 
 
-
+data %>% head
 
 #업데이트 예정, R markdown 제작 예정. df 계정과목 데이터 채우는 거 반복문 추가해야 함
+
 
 
