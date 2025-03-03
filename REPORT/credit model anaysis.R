@@ -15,6 +15,7 @@ select <- dplyr::select
 
 df <- read_excel("credit data.xlsx")
 
+
 # Function to handle outliers in financial data
 handle_outliers <- function(df, cols, method = "winsorize", threshold = 3) {
    for (col in cols) {
@@ -224,6 +225,10 @@ main <- function() {
       mutate(across(-c(Bond_Mean, Bond_Mean_Numeric, 업종), 
                     ~ (. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
    
+   modeling_df_for_selection <- modeling_df_standardized %>% 
+      select(-업종, -Bond_Mean) %>% 
+      rename(target = Bond_Mean_Numeric)
+   
    # Feature selection
    selected_features <- select_features(
       modeling_df_standardized %>% select(-Bond_Mean) %>% rename(target = Bond_Mean_Numeric),
@@ -297,7 +302,7 @@ main <- function() {
    }
    
    # Save models and functions for later use
-   saveRDS(best_model, "best_credit_rating_model.rds")
+   #saveRDS(best_model, "best_credit_rating_model.rds")
    #saveRDS(selected_features, "selected_features.rds")
    #saveRDS(modeling_df, "model_reference_data.rds")
    
@@ -381,6 +386,7 @@ visualize_results <- function(results) {
       }
       
       if (!is.null(importance_data) && importance_col %in% colnames(importance_data)) {
+         
          p2 <- ggplot(importance_data %>% 
                          arrange(desc(!!sym(importance_col))) %>% 
                          head(10), 
@@ -518,3 +524,5 @@ visualize_results <- function(results) {
 }
 
 visualize_results(results)
+
+# results$best_model
