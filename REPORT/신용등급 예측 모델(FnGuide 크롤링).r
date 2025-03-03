@@ -1,4 +1,5 @@
 library(readxl)
+library(MASS)
 library(tidyverse)
 library(stringr)
 library(readr)
@@ -9,7 +10,9 @@ library(gbm) #gradient boost
 library(nnet) #ann
 library(e1071) #svd
 library(caret)
-library(MASS)
+
+select <- dplyr::select
+
 
 # 분석 시 백분율은 0~1 사이로 전환
 
@@ -241,70 +244,7 @@ for (i in 1:nrow(df)){
 df[!complete.cases(df), ] %>% head # NA값들 확인
 df <- df[complete.cases(df), ]
 
-
-# 모델-----
-df_raw <- df
-
-df$Bond_Mean <- df$Bond_Mean %>% as.factor()
-df$업종 <- df$업종 %>% as.factor()
-df <- df %>% select(-종목코드, -회사명, -시장)
-df <- df %>% select(-업종)
-
-# Bond_Mean을 제외한 모든 열에 대해 min–max 정규화
-df_scaled <- df %>% 
-   mutate(across(-Bond_Mean, 
-                 ~ (. - min(., na.rm = TRUE)) / 
-                    (max(., na.rm = TRUE) - min(., na.rm = TRUE))))
-
-# Bond_Mean을 제외한 모든 열에 대해 Z-Score 표준화
-df_standardized <- df_scaled %>%
-   mutate(across(-Bond_Mean, 
-                 ~ (. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
-
-# 등급 순서 정의 (낮은 등급부터 높은 등급까지)
-rating_order <- c("D", "C", "CC", "CCC-", "CCC", "CCC+",
-                  "B-","B","B+","BB-","BB","BB+","BBB-","BBB","BBB+",
-                  "A-","A","A+","AA-","AA","AA+","AAA")
-
-# Bond_Mean 변수를 ordered factor로 변환한 후 숫자형으로 변환 (D=1, AAA=22)
-df_standardized$Bond_Mean <- factor(df_standardized$Bond_Mean, levels = rating_order, ordered = TRUE)
-df_standardized$Bond_Mean <- as.numeric(df_standardized$Bond_Mean)
-
-# 50번 반복하여 학습/테스트 분할 후 평균 모델 평가
-n_iter <- 50
-correlations <- numeric(n_iter)
-rmses <- numeric(n_iter)
-
-for (i in 1:n_iter) {
-   # 데이터 분할: 학습 80%, 테스트 나머지
-   train_idx <- sample(1:nrow(df_standardized), size = 0.8 * nrow(df_standardized))
-   train <- df_standardized[train_idx, ]
-   test <- df_standardized[-train_idx, ]
-   
-   # RandomForest 모델 학습 (회귀 모델로 자동 인식됨)
-   model_rf <- randomForest(Bond_Mean ~ ., data = train, importance = TRUE, proximity = TRUE, mtry = n)
-   
-   # 테스트 데이터에 대한 예측 수행
-   pred <- predict(model_rf, newdata = test)
-   
-   # 실제값과 예측값에 대한 상관계수 및 RMSE 계산
-   correlation <- cor(test$Bond_Mean, pred)
-   rmse <- sqrt(mean((test$Bond_Mean - pred)^2))
-   
-   correlations[i] <- correlation
-   rmses[i] <- rmse
-}
-
-# 50회 반복 결과의 평균 계산
-mean_correlation <- mean(correlations)
-mean_rmse <- mean(rmses)
-
-print(mean_correlation)
-print(mean_rmse)
-
-
-
-
+writexl::write_xlsx(df, "credit data.xlsx")
 
 # 업데이트 예정, R markdown 제작 예정----
 
