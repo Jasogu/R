@@ -16,17 +16,17 @@ select <- dplyr::select
 df <- read_excel("credit data.xlsx")
 
 
-# Function to handle outliers in financial data
+# 재무 데이터 이상치 처리 함수
 handle_outliers <- function(df, cols, method = "winsorize", threshold = 3) {
    for (col in cols) {
       if (method == "winsorize") {
-         # Winsorization - cap extreme values at specified quantiles
+         # Winsorization - 극단값을 지정된 분위수로 제한
          q_low <- quantile(df[[col]], 0.05, na.rm = TRUE)
          q_high <- quantile(df[[col]], 0.95, na.rm = TRUE)
          df[[col]] <- ifelse(df[[col]] < q_low, q_low, df[[col]])
          df[[col]] <- ifelse(df[[col]] > q_high, q_high, df[[col]])
       } else if (method == "z-score") {
-         # Z-score method - remove or cap values beyond threshold standard deviations
+         # Z-score method - 임계값 이상의 표준편차를 가진 값을 제거하거나 제한
          z_scores <- scale(df[[col]])
          df[[col]] <- ifelse(abs(z_scores) > threshold, 
                              sign(z_scores) * threshold * sd(df[[col]], na.rm = TRUE) + mean(df[[col]], na.rm = TRUE), 
@@ -36,9 +36,9 @@ handle_outliers <- function(df, cols, method = "winsorize", threshold = 3) {
    return(df)
 }
 
-# Function to evaluate model performance
+# 모델 성능 평가 함수
 evaluate_model <- function(actual, predicted, print_results = TRUE) {
-   # Convert predicted values to the same scale as actual if necessary
+   # 필요한 경우 예측값을 실제값과 동일한 척도로 변환
    if (is.factor(actual) && is.numeric(predicted)) {
       predicted_factor <- cut(predicted, 
                               breaks = c(0, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 
@@ -47,7 +47,7 @@ evaluate_model <- function(actual, predicted, print_results = TRUE) {
                               labels = levels(actual))
       confusion_matrix <- confusionMatrix(predicted_factor, actual)
    } else {
-      # For regression evaluation
+      # 회귀 평가 지표
       rmse <- sqrt(mean((actual - predicted)^2))
       mae <- mean(abs(actual - predicted))
       correlation <- cor(actual, predicted)
@@ -118,7 +118,7 @@ select_features <- function(df, target_col, method = "correlation", threshold = 
    }
 }
 
-# Function to train and compare multiple models
+# 여러 모델을 훈련하고 비교하는 함수
 train_compare_models <- function(df, target_col, features, n_folds = 5, n_repeats = 10) {
    # Create formula
    formula_str <- paste(target_col, "~", paste(features, collapse = " + "))
@@ -225,16 +225,13 @@ main <- function() {
       mutate(across(-c(Bond_Mean, Bond_Mean_Numeric, 업종), 
                     ~ (. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
    
-   modeling_df_for_selection <- modeling_df_standardized %>% 
-      select(-업종, -Bond_Mean) %>% 
+   modeling_df_for_selection <- modeling_df_standardized %>%
+      select(-Bond_Mean, -업종) %>%
       rename(target = Bond_Mean_Numeric)
    
    # Feature selection
-   selected_features <- select_features(
-      modeling_df_standardized %>% select(-Bond_Mean) %>% rename(target = Bond_Mean_Numeric),
-      "target", 
-      method = "random_forest"
-   )
+   selected_features <- colnames(modeling_df_standardized %>% 
+                                    select(-Bond_Mean, -Bond_Mean_Numeric))
    
    cat("Selected features:", paste(selected_features, collapse = ", "), "\n")
    
@@ -354,6 +351,7 @@ visualize_results <- function(results) {
    library(gridExtra)
    library(viridis)
    library(caret) # varImp 함수를 위해 추가
+   library(grid)
    
    # 1. 모델 성능 비교 시각화
    resamps <- results$model_comparison
@@ -518,11 +516,111 @@ visualize_results <- function(results) {
          theme_void()
    })
    
-   # 그래프 배치 및 출력
-   grid.arrange(p2, p3, p4, p5, ncol = 2)
+   model_summary <- results$model_comparison
    
+   # 텍스트 테이블 생성
+   model_text <- paste(
+      "Models: rf, gbm, svr\nNumber of resamples: 50\n\n",
+      "MAE\n",
+      sprintf("        Min.  1st Qu.   Median     Mean  3rd Qu.     Max.\n"),
+      sprintf("rf  %.6f %.6f %.6f %.6f %.6f %.6f\n", 
+              model_summary$statistics$MAE["rf","Min."],
+              model_summary$statistics$MAE["rf","1st Qu."],
+              model_summary$statistics$MAE["rf","Median"],
+              model_summary$statistics$MAE["rf","Mean"],
+              model_summary$statistics$MAE["rf","3rd Qu."],
+              model_summary$statistics$MAE["rf","Max."]),
+      sprintf("gbm %.6f %.6f %.6f %.6f %.6f %.6f\n", 
+              model_summary$statistics$MAE["gbm","Min."],
+              model_summary$statistics$MAE["gbm","1st Qu."],
+              model_summary$statistics$MAE["gbm","Median"],
+              model_summary$statistics$MAE["gbm","Mean"],
+              model_summary$statistics$MAE["gbm","3rd Qu."],
+              model_summary$statistics$MAE["gbm","Max."]),
+      sprintf("svr %.6f %.6f %.6f %.6f %.6f %.6f\n\n", 
+              model_summary$statistics$MAE["svr","Min."],
+              model_summary$statistics$MAE["svr","1st Qu."],
+              model_summary$statistics$MAE["svr","Median"],
+              model_summary$statistics$MAE["svr","Mean"],
+              model_summary$statistics$MAE["svr","3rd Qu."],
+              model_summary$statistics$MAE["svr","Max."]),
+      "RMSE\n",
+      sprintf("        Min.  1st Qu.   Median     Mean  3rd Qu.     Max.\n"),
+      sprintf("rf  %.6f %.6f %.6f %.6f %.6f %.6f\n", 
+              model_summary$statistics$RMSE["rf","Min."],
+              model_summary$statistics$RMSE["rf","1st Qu."],
+              model_summary$statistics$RMSE["rf","Median"],
+              model_summary$statistics$RMSE["rf","Mean"],
+              model_summary$statistics$RMSE["rf","3rd Qu."],
+              model_summary$statistics$RMSE["rf","Max."]),
+      sprintf("gbm %.6f %.6f %.6f %.6f %.6f %.6f\n", 
+              model_summary$statistics$RMSE["gbm","Min."],
+              model_summary$statistics$RMSE["gbm","1st Qu."],
+              model_summary$statistics$RMSE["gbm","Median"],
+              model_summary$statistics$RMSE["gbm","Mean"],
+              model_summary$statistics$RMSE["gbm","3rd Qu."],
+              model_summary$statistics$RMSE["gbm","Max."]),
+      sprintf("svr %.6f %.6f %.6f %.6f %.6f %.6f\n\n", 
+              model_summary$statistics$RMSE["svr","Min."],
+              model_summary$statistics$RMSE["svr","1st Qu."],
+              model_summary$statistics$RMSE["svr","Median"],
+              model_summary$statistics$RMSE["svr","Mean"],
+              model_summary$statistics$RMSE["svr","3rd Qu."],
+              model_summary$statistics$RMSE["svr","Max."]),
+      "Rsquared\n",
+      sprintf("         Min.   1st Qu.    Median      Mean   3rd Qu.      Max.\n"),
+      sprintf("rf  %.7f %.7f %.7f %.7f %.7f %.7f\n", 
+              model_summary$statistics$Rsquared["rf","Min."],
+              model_summary$statistics$Rsquared["rf","1st Qu."],
+              model_summary$statistics$Rsquared["rf","Median"],
+              model_summary$statistics$Rsquared["rf","Mean"],
+              model_summary$statistics$Rsquared["rf","3rd Qu."],
+              model_summary$statistics$Rsquared["rf","Max."]),
+      sprintf("gbm %.7f %.7f %.7f %.7f %.7f %.7f\n", 
+              model_summary$statistics$Rsquared["gbm","Min."],
+              model_summary$statistics$Rsquared["gbm","1st Qu."],
+              model_summary$statistics$Rsquared["gbm","Median"],
+              model_summary$statistics$Rsquared["gbm","Mean"],
+              model_summary$statistics$Rsquared["gbm","3rd Qu."],
+              model_summary$statistics$Rsquared["gbm","Max."]),
+      sprintf("svr %.7f %.7f %.7f %.7f %.7f %.7f\n\n", 
+              model_summary$statistics$Rsquared["svr","Min."],
+              model_summary$statistics$Rsquared["svr","1st Qu."],
+              model_summary$statistics$Rsquared["svr","Median"],
+              model_summary$statistics$Rsquared["svr","Mean"],
+              model_summary$statistics$Rsquared["svr","3rd Qu."],
+              model_summary$statistics$Rsquared["svr","Max."]),
+      sprintf("Best model: %s\n", results$best_model_name),
+      sprintf("Model Evaluation Results:\n"),
+      sprintf("RMSE: %.6f\n", results$test_evaluation$RMSE),
+      sprintf("MAE: %.6f\n", results$test_evaluation$MAE),
+      sprintf("Correlation: %.7f\n", results$test_evaluation$Correlation),
+      sprintf("R-Squared: %.7f\n", results$test_evaluation$R_Squared),
+      sprintf("Mean Notch Error: %.6f", results$test_evaluation$Notch_Error)
+   )
+   
+   # 텍스트 테이블을 그래프로 변환
+   text_grob <- textGrob(model_text, just = "left", x = 0.05, 
+                         gp = gpar(fontfamily = "mono", fontsize = 9))
+   
+   # 텍스트 그래프 생성
+   p_text <- ggplot() + 
+      theme_void() +
+      annotation_custom(text_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+      labs(title = "모델 성능 비교 결과")
+   
+   # 그래프 배치 및 출력 (2x3 레이아웃)
+   grid.arrange(
+      p2, p3, p4, p5, p_text,
+      layout_matrix = rbind(
+         c(1, 2, 5),
+         c(3, 4, 5)
+      ),
+      widths = c(1, 1, 1.2)
+   )
+   
+   # 그래프 저장 코드는 그대로 유지
 }
 
 visualize_results(results)
 
-# results$best_model
