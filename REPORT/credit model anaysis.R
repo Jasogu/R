@@ -9,6 +9,8 @@ library(nnet)
 library(e1071)
 library(caret)
 
+
+
 select <- dplyr::select
 
 df <- read_excel("credit data.xlsx")
@@ -296,8 +298,8 @@ main <- function() {
    
    # Save models and functions for later use
    saveRDS(best_model, "best_credit_rating_model.rds")
-   saveRDS(selected_features, "selected_features.rds")
-   saveRDS(modeling_df, "model_reference_data.rds")
+   #saveRDS(selected_features, "selected_features.rds")
+   #saveRDS(modeling_df, "model_reference_data.rds")
    
    # Return results
    return(list(
@@ -337,3 +339,182 @@ cat("=================================================\n")
 # )
 # prediction <- results$predict_function(new_company)
 # print(prediction$rating)
+
+
+
+
+# 결과 시각화 함수
+visualize_results <- function(results) {
+   library(ggplot2)
+   library(gridExtra)
+   library(viridis)
+   library(caret) # varImp 함수를 위해 추가
+   
+   # 1. 모델 성능 비교 시각화
+   resamps <- results$model_comparison
+   
+   # 리샘플링 결과 데이터 준비
+   resamps_data <- as.data.frame(resamps$values)
+   metrics_long <- resamps_data %>%
+      pivot_longer(cols = everything(),
+                   names_to = c("Model", "Metric"),
+                   names_pattern = "([^.]+)\\.(.*)",
+                   values_to = "Value")
+   
+   
+   # 2. 특성 중요도 시각화 - 다양한 모델 유형 처리
+   # 변수 중요도를 얻는 안전한 방법
+   tryCatch({
+      if (inherits(results$best_model, "train")) {
+         # caret 모델인 경우
+         importance_data <- varImp(results$best_model)$importance
+         importance_data$Feature <- rownames(importance_data)
+         importance_col <- "Overall"
+      } else if (results$best_model_name == "rf" && "randomForest" %in% class(results$best_model)) {
+         # randomForest 패키지 모델인 경우
+         importance_data <- as.data.frame(randomForest::importance(results$best_model))
+         importance_data$Feature <- rownames(importance_data)
+         importance_col <- "%IncMSE"
+      } else {
+         # 다른 모델 유형이거나 중요도를 얻을 수 없는 경우
+         importance_data <- NULL
+      }
+      
+      if (!is.null(importance_data) && importance_col %in% colnames(importance_data)) {
+         p2 <- ggplot(importance_data %>% 
+                         arrange(desc(!!sym(importance_col))) %>% 
+                         head(10), 
+                      aes(x = reorder(Feature, !!sym(importance_col)), 
+                          y = !!sym(importance_col), 
+                          fill = !!sym(importance_col))) +
+            geom_bar(stat = "identity") +
+            coord_flip() +
+            labs(title = "특성 중요도",
+                 x = "", y = "중요도") +
+            theme_minimal() +
+            theme(legend.position = "none") +
+            scale_fill_viridis_c()
+      } else {
+         # 선택된 특성 시각화 (중요도 정보가 없는 경우)
+         selected_features <- data.frame(
+            Feature = results$selected_features,
+            Importance = seq(length(results$selected_features), 1, -1)
+         )
+         
+         p2 <- ggplot(selected_features, 
+                      aes(x = reorder(Feature, Importance), y = Importance, fill = Importance)) +
+            geom_bar(stat = "identity") +
+            coord_flip() +
+            labs(title = "선택된 특성",
+                 x = "", y = "선택 순서") +
+            theme_minimal() +
+            theme(legend.position = "none") +
+            scale_fill_viridis_c()
+      }
+   }, error = function(e) {
+      # 오류 발생 시 기본 특성 시각화
+      selected_features <- data.frame(
+         Feature = results$selected_features,
+         Importance = seq(length(results$selected_features), 1, -1)
+      )
+      
+      p2 <<- ggplot(selected_features, 
+                    aes(x = reorder(Feature, Importance), y = Importance, fill = Importance)) +
+         geom_bar(stat = "identity") +
+         coord_flip() +
+         labs(title = "선택된 특성",
+              x = "", y = "선택 순서") +
+         theme_minimal() +
+         theme(legend.position = "none") +
+         scale_fill_viridis_c()
+   })
+   
+   # 3. 예측 vs 실제 값 산점도
+   # train_idx가 정의되지 않은 경우 처리
+   if (!exists("train_idx") && "train_indices" %in% names(results)) {
+      train_idx <- results$train_indices
+   } else if (!exists("train_idx")) {
+      # 임의로 70% 훈련 데이터 생성
+      set.seed(123)
+      train_idx <- sample(1:nrow(results$processed_data), 
+                          size = floor(0.7 * nrow(results$processed_data)))
+   }
+   
+   test_data <- results$processed_data[-train_idx, ]
+   
+   # 예측 수행
+   tryCatch({
+      predictions <- predict(results$best_model, 
+                             newdata = test_data %>% select(all_of(results$selected_features)))
+      
+      pred_vs_actual <- data.frame(
+         Actual = test_data$Bond_Mean_Numeric,
+         Predicted = predictions
+      )
+      
+      p3 <- ggplot(pred_vs_actual, aes(x = Actual, y = Predicted)) +
+         geom_point(alpha = 0.6, color = "darkblue") +
+         geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red") +
+         labs(title = "예측 vs 실제 신용등급",
+              x = "실제 등급", y = "예측 등급") +
+         theme_minimal() +
+         annotate("text", x = min(pred_vs_actual$Actual), y = max(pred_vs_actual$Predicted),
+                  label = paste("상관계수:", round(results$test_evaluation$Correlation, 3)),
+                  hjust = 0, vjust = 1)
+      
+      # 4. 오차 분포 히스토그램
+      error_data <- data.frame(
+         Error = predictions - test_data$Bond_Mean_Numeric
+      )
+      
+      p4 <- ggplot(error_data, aes(x = Error)) +
+         geom_histogram(bins = 20, fill = "steelblue", color = "white") +
+         labs(title = "예측 오차 분포",
+              x = "예측 오차 (예측값 - 실제값)", y = "빈도") +
+         theme_minimal() +
+         geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+         annotate("text", x = max(error_data$Error) * 0.8, y = 5,
+                  label = paste("평균 오차:", round(mean(error_data$Error), 3),
+                                "\nMAE:", round(results$test_evaluation$MAE, 3)),
+                  hjust = 1)
+   }, error = function(e) {
+      # 예측 오류 시 더미 그래프 생성
+      p3 <<- ggplot() + 
+         annotate("text", x = 0.5, y = 0.5, label = "예측 데이터를 생성할 수 없습니다") +
+         theme_void()
+      
+      p4 <<- ggplot() + 
+         annotate("text", x = 0.5, y = 0.5, label = "오차 데이터를 생성할 수 없습니다") +
+         theme_void()
+   })
+   
+   # 5. 업종별 신용등급 분포
+   tryCatch({
+      industry_ratings <- results$raw_data %>%
+         group_by(업종) %>%
+         summarise(
+            평균등급 = mean(as.numeric(factor(Bond_Mean)), na.rm = TRUE),
+            기업수 = n()
+         ) %>%
+         arrange(desc(평균등급))
+      
+      p5 <- ggplot(industry_ratings %>% head(15), 
+                   aes(x = reorder(업종, 평균등급), y = 평균등급, fill = 기업수)) +
+         geom_bar(stat = "identity") +
+         coord_flip() +
+         labs(title = "업종별 평균 신용등급 (상위 15개)",
+              x = "", y = "평균 신용등급") +
+         theme_minimal() +
+         scale_fill_viridis_c(name = "기업 수")
+   }, error = function(e) {
+      p5 <<- ggplot() + 
+         annotate("text", x = 0.5, y = 0.5, label = "업종별 데이터를 생성할 수 없습니다") +
+         theme_void()
+   })
+   
+   # 그래프 배치 및 출력
+   grid.arrange(p2, p3, p4, p5, ncol = 2)
+   
+}
+
+visualize_results(results)
