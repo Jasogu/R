@@ -42,8 +42,7 @@ ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 �
 1. 데이터 중 80%를 학습용 데이터로 사용, 20%를 예측용 데이터로 사용함
 
 ### 분석 결과 시각화
-[![분석 결과](images/README/신용등급 예측 모델_결과.png)]
-
+![분석 결과](https://github.com/user-attachments/assets/08a7e404-9981-4939-bc49-8276d1113f93)
 
 
 
