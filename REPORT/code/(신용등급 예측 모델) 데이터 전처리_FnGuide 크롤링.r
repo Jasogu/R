@@ -244,7 +244,6 @@ for (i in 1:nrow(df)){
 df[!complete.cases(df), ] %>% head # NA값들 확인
 df <- df[complete.cases(df), ]
 
-writexl::write_xlsx(df, "credit data.xlsx")
-
+writexl::write_xlsx(df, "data/credit data.xlsx")
 # 업데이트 예정, R markdown 제작 예정----
 
