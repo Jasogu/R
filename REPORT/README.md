@@ -2,7 +2,7 @@
 
 ## 1. 신용등급 예측 모델
 
-코스피, 코스닥에 상장된 기업들의 재무데이터를 학습하여 신용등급을 예측하는 학슴 알고리즘 만들기
+코스피, 코스닥에 상장된 기업들의 재무데이터를 학습하여 신용등급을 예측하는 학습 알고리즘 만들기
 
 
 FnGuide 에서 제공하는 신용등급 데이터를 토대로 분석
@@ -16,6 +16,7 @@ FnGuide 에서 제공하는 신용등급 데이터를 토대로 분석
 1. 3개 신용평가사 중 가장 최하 등급을 기준으로 분석
 
 ex1) 각각 A, A, BBB+ 이면 BBB+로 분석함.
+
 ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 분석함.
 
 1. 신용등급 데이터에서 중복된 회사 제거
@@ -23,7 +24,8 @@ ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 �
 1. 분석에 필요한 재무데이터를 추가(웹 크롤링 후 전처리)
 1. 부동산 펀드, 은행 등 재무데이터가 일반적이지 않은 기업 제거
 
-[전처리 데이터](https://github.com/Jasogu/R/blob/main/REPORT/code/data/credit%20data.xlsx)
+[전처리 데이터](https://docs.google.com/spreadsheets/d/1L92IEV94V0EKSrV6IHB3zg1XVqne0wZU/edit?usp=sharing&ouid=117590746085002044744&rtpof=true&sd=true)
+
 
 
 
