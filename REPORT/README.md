@@ -83,7 +83,7 @@ AI, 특히 Claude 3.7 Sonnet의 성능이 놀라울 정도로 뛰어나다.
 
 <br><br><br>
 
-## 1. 주가 데이터 조작 및 차트 그리기
+## 2. 주가 데이터 조작 및 차트 그리기
 
 ### Quantmod
 
@@ -114,118 +114,7 @@ Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 �
 
 ![ggplot](https://github.com/user-attachments/assets/cdfad883-cfcf-49c4-978a-876406c5a8b8)
 
-<details>
-<summary>소스코드 펼치기</summary>
-
-
-```r
-library(quantmod)
-library(tidyverse)
-library(lubridate)
-library(ggthemes)
-theme_set(theme_grey(base_family='NanumGothic'))
-
-
-# 열 이름 변경
-myfunc <- function(x) {
-   colnames(x) <- c('open', 'high', 'low', 'close', 'volume', 'adjusted')
-   invisible(x)
-}
-
-# 데이터 가져오기
-getSymbols("AAPL", from = "2020-01-01", to = Sys.Date()-1)
-AAPL <- myfunc(AAPL)
-
-getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
-
-# 주봉 데이터로 변환
-AAPL_weekly <- to.weekly(AAPL)
-AAPL_weekly <- myfunc(AAPL_weekly)
-
-samsung_weekly <- to.weekly(`005930.KS`)
-samsung_weekly <- myfunc(samsung_weekly)
-
-# 데이터 프레임으로 변환
-apple_df <- data.frame(date=index(AAPL_weekly), coredata(AAPL_weekly))
-samsung_df <- data.frame(date=index(samsung_weekly), coredata(samsung_weekly))
-
-# 종가만 추출 후 합치기
-apple_df_close <- apple_df %>% select(1, 4) # 주봉에서는 close가 4번째 열
-samsung_df_close <- samsung_df %>% select(1, 4)
-
-data <- merge(apple_df_close, samsung_df_close, by = "date")
-colnames(data) <- c("date", "AAPL", "samsung")
-
-# 날짜 형식 변환
-data$date <- as.Date(data$date)
-
-# 데이터 정규화 (첫날의 종가 기준 = 1)
-data_normalized <- data %>%
-   mutate(AAPL_normalized = AAPL / first(AAPL),
-          samsung_normalized = samsung / first(samsung))
-
-# 데이터 정리: 길게 변환
-data_long <- data_normalized %>%
-   select(date, AAPL_normalized, samsung_normalized) %>%
-   gather(key = "company", value = "price_normalized", -date)
-
-# 향상된 시각화
-ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
-   geom_line(size = 1.2) +
-   geom_point(data = subset(data_long, date == max(date)), 
-              aes(x = date, y = price_normalized, color = company), size = 3) +
-   scale_color_manual(values = c("AAPL_normalized" = "#E41A1C", "samsung_normalized" = "#377EB8"),
-                      labels = c("Apple", "Samsung")) +
-   labs(title = "Apple vs Samsung 주가 상승률 비교 (주간 데이터)",
-        subtitle = paste0("2020년 초 대비 상승률 (", format(min(data$date), "%Y-%m-%d"), " = 100%)"),
-        x = NULL,
-        y = "상승률",
-        color = NULL,
-        caption = "데이터 출처: Yahoo Finance(Quantmod) | 작성일: 2025-03-07") +
-   theme_economist_white() +
-   theme(
-      text = element_text(family = "NanumGothic"),
-      plot.title = element_text(face = "bold", size = 16, hjust = 0.5, margin = margin(b = 10)),
-      plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#555555", margin = margin(b = 20)),
-      plot.caption = element_text(size = 9, color = "#555555", hjust = 1, margin = margin(t = 15)),
-      plot.background = element_rect(fill = "#FFFFFF", color = NA),
-      panel.background = element_rect(fill = "#F9F9F9"),
-      panel.grid.minor = element_blank(),
-      panel.grid.major = element_line(color = "#DDDDDD", linetype = "dotted"),
-      legend.position = "bottom",
-      legend.background = element_rect(fill = "#FFFFFF", color = NA),
-      legend.key = element_rect(fill = "transparent"),
-      legend.margin = margin(t = 10, b = 10),
-      axis.title.y = element_text(margin = margin(r = 10), face = "bold"),
-      axis.text = element_text(color = "#333333"),
-      axis.ticks = element_line(color = "#555555")
-   ) +
-   scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
-                      breaks = seq(0, 3.5, by = 0.5),
-                      limits = c(0.5, 3.5),
-                      expand = c(0, 0)) +
-   scale_x_date(date_breaks = "6 months", 
-                date_labels = "%Y-%m",
-                expand = c(0.01, 0)) +
-   annotate("rect", xmin = as.Date("2022-01-01"), xmax = as.Date("2022-12-31"), 
-            ymin = 0.5, ymax = 3.5, alpha = 0.1, fill = "#FFD700") +
-   annotate("text", x = as.Date("2022-07-01"), y = 0.6, 
-            label = "2022년 글로벌 테크주 조정기", 
-            size = 5, fontface = "bold", color = "#555555") +
-   geom_hline(yintercept = 1, linetype = "dashed", color = "#555555", size = 0.7) +
-   # 최종 값 라벨 추가
-   geom_text(data = subset(data_long, date == max(date)),
-             aes(label = scales::percent(price_normalized, accuracy = 1), color = company),
-             hjust = -0.3, vjust = 0, fontface = "bold", size = 3.5) +
-   # 중요 이벤트 표시
-   annotate("segment", x = as.Date("2023-06-01"), xend = as.Date("2023-06-01"),
-            y = 2.7, yend = 2.5, arrow = arrow(length = unit(0.3, "cm")), color = "#E41A1C") +
-   annotate("text", x = as.Date("2023-06-01"), y = 2.8, 
-            label = "Apple Vision Pro 발표", 
-            size = 5, fontface = "italic", color = "#E41A1C")
-```
-</details> 
-
+[소스 코드](https://github.com/Jasogu/R/blob/main/REPORT/code/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown).Rmd)
 
 
 <br><br><br>
