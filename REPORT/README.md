@@ -92,15 +92,15 @@ R의 Quantmod 라이브러리를 사용하면 주가 데이터를 불러올 수 
 원하는 시작날짜와 종료날짜, 일봉, 주봉, 월봉을 비롯하여 이평선, 볼린저밴드, RSI, MACD 등의 기술적 지표를 차트로 나타낼수 있다.
 
 
-![dark color theme](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown)/samsung-chart-daily-1.png)
+![dark color theme](https://github.com/user-attachments/assets/c5f4d003-7c82-44c6-8cc7-fe711a7a0e86)
 
 <br>
 
-![white color theme](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown)/samsung-chart-weekly-1.png)
+![white color theme](https://github.com/user-attachments/assets/1bf38888-c27f-4ceb-9fc9-b5bf2986cb8f)
 
 <br>
 
-![white color theme](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown)/samsung-chart-monthly-1.png)
+![white color theme](https://github.com/user-attachments/assets/834394b3-c9f1-4de7-a528-5a8904caa84c)
 
 <br>
 
@@ -110,7 +110,7 @@ Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 �
 
 2020년을 기준으로 애플은 주가가 3배가 되었고 삼성의 주가는 상승하지 못했다.
 
-![](images/주가 데이터 추출 및 차트그리기(R markdown)/normalized-chart-1.png)
+![ggplot2](https://github.com/user-attachments/assets/83544885-a46d-4e92-8127-f0ccb2cc803b)
 
 
 
