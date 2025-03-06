@@ -20,6 +20,7 @@ if (!requireNamespace("quantmod", quietly = TRUE)) {
 library(quantmod)
 library(tidyverse)
 library(lubridate)
+library(ggthemes)
 theme_set(theme_grey(base_family='NanumGothic'))
 
 #열 이름 변경
@@ -47,12 +48,12 @@ head(AAPL)
 ```
 
     ##               open    high     low   close    volume adjusted
-    ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.79601
-    ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.08829
-    ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.66273
-    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.32098
-    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.48435
-    ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 75.04521
+    ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.71607
+    ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.00912
+    ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.58290
+    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.24153
+    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.40365
+    ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 74.96281
 
 <br>
 
@@ -86,7 +87,7 @@ chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
             TA="addSMA(n=20); addSMA(n=50)")
 ```
 
-![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
 
 <br>
 
@@ -107,8 +108,8 @@ head(`005930.KS`)
 
     ##             open  high   low close   volume adjusted
     ## 2020-01-02 55500 56000 55000 55200 12993228 48494.80
-    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.37
-    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.37
+    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.36
+    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.36
     ## 2020-01-07 55700 56400 55600 55800 10009778 49021.93
     ## 2020-01-08 56200 57400 55900 56800 23501171 49900.45
     ## 2020-01-09 58400 58600 57400 58600 24102579 51481.80
@@ -125,7 +126,7 @@ addBBands()
 addSMA(5);addSMA(20, col='Yellow');addMACD()
 ```
 
-![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-daily-1.png)<!-- -->
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-daily-1.png)<!-- -->
 
 <br>
 
@@ -145,7 +146,7 @@ chartSeries(samsung_weekly['2024-01-01::2025-01-01'],
             TA = "addSMA(n=5); addSMA(n=10); addVo()")
 ```
 
-![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
 
 ``` r
 samsung_monthly <- to.monthly(`005930.KS`)
@@ -159,7 +160,7 @@ chartSeries(samsung_monthly['2020-01-01::2025-01-01'],
 addVo()
 ```
 
-![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
 
 <br>
 
@@ -170,36 +171,39 @@ addVo()
 기준으로 정규화하여 비교
 
 ``` r
-# 데이터 프레임으로 변환
-apple_df <- data.frame(date=index(AAPL), coredata(AAPL))
-samsung_df <- data.frame(date=index(`005930.KS`), coredata(`005930.KS`))
-samsung_df %>% head
+# 데이터 가져오기
+getSymbols("AAPL", from = "2020-01-01", to = Sys.Date()-1)
 ```
 
-    ##         date  open  high   low close   volume adjusted
-    ## 1 2020-01-02 55500 56000 55000 55200 12993228 48494.80
-    ## 2 2020-01-03 56000 56600 54900 55500 15422255 48758.37
-    ## 3 2020-01-06 54900 55600 54600 55500 10278951 48758.37
-    ## 4 2020-01-07 55700 56400 55600 55800 10009778 49021.93
-    ## 5 2020-01-08 56200 57400 55900 56800 23501171 49900.45
-    ## 6 2020-01-09 58400 58600 57400 58600 24102579 51481.80
+    ## [1] "AAPL"
 
 ``` r
-# 종가만 추출 후 합치기 (Apple: 5번째 열, Samsung: 5번째 열)
-apple_df_close <- apple_df %>% select(1, 5)
-samsung_df_close <- samsung_df %>% select(1, 5)
+AAPL <- myfunc(AAPL)
+
+getSymbols("005930.KS", from = "2020-01-01", to = Sys.Date())
+```
+
+    ## [1] "005930.KS"
+
+``` r
+# 주봉 데이터로 변환
+AAPL_weekly <- to.weekly(AAPL)
+AAPL_weekly <- myfunc(AAPL_weekly)
+
+samsung_weekly <- to.weekly(`005930.KS`)
+samsung_weekly <- myfunc(samsung_weekly)
+
+# 데이터 프레임으로 변환
+apple_df <- data.frame(date=index(AAPL_weekly), coredata(AAPL_weekly))
+samsung_df <- data.frame(date=index(samsung_weekly), coredata(samsung_weekly))
+
+# 종가만 추출 후 합치기
+apple_df_close <- apple_df %>% select(1, 4) # 주봉에서는 close가 4번째 열
+samsung_df_close <- samsung_df %>% select(1, 4)
 
 data <- merge(apple_df_close, samsung_df_close, by = "date")
 colnames(data) <- c("date", "AAPL", "samsung")
-str(data)
-```
 
-    ## 'data.frame':    1210 obs. of  3 variables:
-    ##  $ date   : Date, format: "2020-01-02" "2020-01-03" ...
-    ##  $ AAPL   : num  75.1 74.4 74.9 74.6 75.8 ...
-    ##  $ samsung: num  55200 55500 55500 55800 56800 58600 59500 60000 60000 59000 ...
-
-``` r
 # 날짜 형식 변환
 data$date <- as.Date(data$date)
 
@@ -208,7 +212,7 @@ data_normalized <- data %>%
    mutate(AAPL_normalized = AAPL / first(AAPL),
           samsung_normalized = samsung / first(samsung))
 
-# 데이터 정리: 길게 변환하여 두 회사 데이터를 하나의 열로 모음
+# 데이터 정리: 길게 변환
 data_long <- data_normalized %>%
    select(date, AAPL_normalized, samsung_normalized) %>%
    gather(key = "company", value = "price_normalized", -date)
@@ -223,16 +227,58 @@ data_long <- data_normalized %>%
 
 ``` r
 ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
-   geom_line() +
-   scale_color_manual(values = c("AAPL_normalized" = "red", "samsung_normalized" = "blue"),
-                      labels = c("AAPL", "Samsung")) +
-   labs(title = "AAPL vs Samsung 상승률 비교",
-        x = "날짜",
-        y = "상승률 (첫날 = 100%)",
-        color = "회사") +
-   theme_minimal() +
-   scale_y_continuous(labels = scales::percent) +
-   theme(legend.position = "bottom")
+   geom_line(size = 1.2) +
+   geom_point(data = subset(data_long, date == max(date)), 
+              aes(x = date, y = price_normalized, color = company), size = 3) +
+   scale_color_manual(values = c("AAPL_normalized" = "#E41A1C", "samsung_normalized" = "#377EB8"),
+                      labels = c("Apple", "Samsung")) +
+   labs(title = "Apple vs Samsung 주가 상승률 비교 (주간 데이터)",
+        subtitle = paste0("2020년 초 대비 상승률 (", format(min(data$date), "%Y-%m-%d"), " = 100%)"),
+        x = NULL,
+        y = "상승률",
+        color = NULL,
+        caption = "데이터 출처: Yahoo Finance(Quantmod) | 작성일: 2025-03-07") +
+   theme_economist_white() +
+   theme(
+      text = element_text(family = "NanumGothic"),
+      plot.title = element_text(face = "bold", size = 16, hjust = 0.5, margin = margin(b = 10)),
+      plot.subtitle = element_text(size = 12, hjust = 0.5, color = "#555555", margin = margin(b = 20)),
+      plot.caption = element_text(size = 9, color = "#555555", hjust = 1, margin = margin(t = 15)),
+      plot.background = element_rect(fill = "#FFFFFF", color = NA),
+      panel.background = element_rect(fill = "#F9F9F9"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_line(color = "#DDDDDD", linetype = "dotted"),
+      legend.position = "bottom",
+      legend.background = element_rect(fill = "#FFFFFF", color = NA),
+      legend.key = element_rect(fill = "transparent"),
+      legend.margin = margin(t = 10, b = 10),
+      axis.title.y = element_text(margin = margin(r = 10), face = "bold"),
+      axis.text = element_text(color = "#333333"),
+      axis.ticks = element_line(color = "#555555")
+   ) +
+   scale_y_continuous(labels = scales::percent_format(accuracy = 1), 
+                      breaks = seq(0, 3.5, by = 0.5),
+                      limits = c(0.5, 3.5),
+                      expand = c(0, 0)) +
+   scale_x_date(date_breaks = "6 months", 
+                date_labels = "%Y-%m",
+                expand = c(0.01, 0)) +
+   annotate("rect", xmin = as.Date("2022-01-01"), xmax = as.Date("2022-12-31"), 
+            ymin = 0.5, ymax = 3.5, alpha = 0.1, fill = "#FFD700") +
+   annotate("text", x = as.Date("2022-07-01"), y = 0.6, 
+            label = "2022년 글로벌 테크주 조정기", 
+            size = 5, fontface = "bold", color = "#555555") +
+   geom_hline(yintercept = 1, linetype = "dashed", color = "#555555", size = 0.7) +
+   # 최종 값 라벨 추가
+   geom_text(data = subset(data_long, date == max(date)),
+             aes(label = scales::percent(price_normalized, accuracy = 1), color = company),
+             hjust = -0.3, vjust = 0, fontface = "bold", size = 3.5) +
+   # 중요 이벤트 표시
+   annotate("segment", x = as.Date("2023-06-01"), xend = as.Date("2023-06-01"),
+            y = 2.7, yend = 2.5, arrow = arrow(length = unit(0.3, "cm")), color = "#E41A1C") +
+   annotate("text", x = as.Date("2023-06-01"), y = 2.8, 
+            label = "Apple Vision Pro 발표", 
+            size = 5, fontface = "italic", color = "#E41A1C")
 ```
 
-![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/normalized-chart-1.png)<!-- -->
+![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/normalized-chart-1.png)<!-- -->
