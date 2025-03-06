@@ -83,7 +83,34 @@ AI, 특히 Claude 3.7 Sonnet의 성능이 놀라울 정도로 뛰어나다.
 
 <br><br><br>
 
-# 데이터 시각화
+# 주가 데이터 조작 및 차트 그리기
+
+## Quantmod
+
+R의 Quantmod 라이브러리를 사용하면 주가 데이터를 불러올 수 있다.
+
+원하는 시작날짜와 종료날짜, 일봉, 주봉, 월봉을 비롯하여 이평선, 볼린저밴드, RSI, MACD 등의 기술적 지표를 차트로 나타낼수 있다.
+
+
+![dark color theme](images/주가 데이터 추출 및 차트그리기(R markdown)/samsung-chart-daily-1.png)
+
+<br>
+
+![white color theme](images/주가 데이터 추출 및 차트그리기(R markdown)/samsung-chart-weekly-1.png)
+
+<br>
+
+![white color theme](images/주가 데이터 추출 및 차트그리기(R markdown)/samsung-chart-monthly-1.png)
+
+<br>
+
+## 주가 상승률 비교 차트
+
+Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 설정)
+
+2020년을 기준으로 애플은 주가가 3배가 되었고 삼성의 주가는 상승하지 못했다.
+
+![](images/주가 데이터 추출 및 차트그리기(R markdown)/normalized-chart-1.png)
 
 
 
