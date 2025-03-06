@@ -96,11 +96,11 @@ R의 Quantmod 라이브러리를 사용하면 주가 데이터를 불러올 수 
 
 <br>
 
-![white color theme](images/주가 데이터 추출 및 차트그리기(R markdown)/samsung-chart-weekly-1.png)
+![white color theme](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown)/samsung-chart-weekly-1.png)
 
 <br>
 
-![white color theme](images/주가 데이터 추출 및 차트그리기(R markdown)/samsung-chart-monthly-1.png)
+![white color theme](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%A3%BC%EA%B0%80%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%B6%94%EC%B6%9C%20%EB%B0%8F%20%EC%B0%A8%ED%8A%B8%EA%B7%B8%EB%A6%AC%EA%B8%B0(R%20markdown)/samsung-chart-monthly-1.png)
 
 <br>
 
