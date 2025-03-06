@@ -118,6 +118,7 @@ Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 �
 <summary>소스코드 펼치기</summary>
 
 
+```r
 library(quantmod)
 library(tidyverse)
 library(lubridate)
@@ -222,7 +223,7 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
    annotate("text", x = as.Date("2023-06-01"), y = 2.8, 
             label = "Apple Vision Pro 발표", 
             size = 5, fontface = "italic", color = "#E41A1C")
-
+```
 </details> 
 
 
