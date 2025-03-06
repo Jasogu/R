@@ -49,10 +49,10 @@ head(AAPL)
 
     ##               open    high     low   close    volume adjusted
     ## 2020-01-02 74.0600 75.1500 73.7975 75.0875 135480400 72.71607
-    ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.00912
+    ## 2020-01-03 74.2875 75.1450 74.1250 74.3575 146322800 72.00911
     ## 2020-01-06 73.4475 74.9900 73.1875 74.9500 118387200 72.58290
-    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.24153
-    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.40365
+    ## 2020-01-07 74.9600 75.2250 74.3700 74.5975 108872000 72.24154
+    ## 2020-01-08 74.2900 76.1100 74.2900 75.7975 132079200 73.40364
     ## 2020-01-09 76.8100 77.6075 76.5500 77.4075 170108400 74.96281
 
 <br>
@@ -87,7 +87,7 @@ chartSeries(AAPL['2024-07-01::2025-01-01'], name="Apple Inc. Stock Price",
             TA="addSMA(n=20); addSMA(n=50)")
 ```
 
-![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
+![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/apple-chart-1.png)<!-- -->
 
 <br>
 
@@ -107,9 +107,9 @@ head(`005930.KS`)
 ```
 
     ##             open  high   low close   volume adjusted
-    ## 2020-01-02 55500 56000 55000 55200 12993228 48494.80
-    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.36
-    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.36
+    ## 2020-01-02 55500 56000 55000 55200 12993228 48494.79
+    ## 2020-01-03 56000 56600 54900 55500 15422255 48758.37
+    ## 2020-01-06 54900 55600 54600 55500 10278951 48758.37
     ## 2020-01-07 55700 56400 55600 55800 10009778 49021.93
     ## 2020-01-08 56200 57400 55900 56800 23501171 49900.45
     ## 2020-01-09 58400 58600 57400 58600 24102579 51481.80
@@ -126,7 +126,7 @@ addBBands()
 addSMA(5);addSMA(20, col='Yellow');addMACD()
 ```
 
-![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-daily-1.png)<!-- -->
+![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-daily-1.png)<!-- -->
 
 <br>
 
@@ -146,7 +146,7 @@ chartSeries(samsung_weekly['2024-01-01::2025-01-01'],
             TA = "addSMA(n=5); addSMA(n=10); addVo()")
 ```
 
-![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
+![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-weekly-1.png)<!-- -->
 
 ``` r
 samsung_monthly <- to.monthly(`005930.KS`)
@@ -160,7 +160,7 @@ chartSeries(samsung_monthly['2020-01-01::2025-01-01'],
 addVo()
 ```
 
-![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
+![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/samsung-chart-monthly-1.png)<!-- -->
 
 <br>
 
@@ -274,11 +274,11 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
              aes(label = scales::percent(price_normalized, accuracy = 1), color = company),
              hjust = -0.3, vjust = 0, fontface = "bold", size = 3.5) +
    # 중요 이벤트 표시
-   annotate("segment", x = as.Date("2023-06-01"), xend = as.Date("2023-06-01"),
+   annotate("segment", x = as.Date("2023-06-06"), xend = as.Date("2023-06-06"),
             y = 2.7, yend = 2.5, arrow = arrow(length = unit(0.3, "cm")), color = "#E41A1C") +
    annotate("text", x = as.Date("2023-06-01"), y = 2.8, 
             label = "Apple Vision Pro 발표", 
             size = 5, fontface = "italic", color = "#E41A1C")
 ```
 
-![](data/images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/normalized-chart-1.png)<!-- -->
+![](images/주가%20데이터%20추출%20및%20차트그리기(R%20markdown)/normalized-chart-1.png)<!-- -->

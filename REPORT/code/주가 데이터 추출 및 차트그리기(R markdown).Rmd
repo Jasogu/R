@@ -6,7 +6,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-knitr::opts_chunk$set(fig.path = "data/images/주가 데이터 추출 및 차트그리기(R markdown)/")
+knitr::opts_chunk$set(fig.path = "images/주가 데이터 추출 및 차트그리기(R markdown)/")
 
 ```
 
@@ -230,7 +230,7 @@ ggplot(data_long, aes(x = date, y = price_normalized, color = company)) +
              aes(label = scales::percent(price_normalized, accuracy = 1), color = company),
              hjust = -0.3, vjust = 0, fontface = "bold", size = 3.5) +
    # 중요 이벤트 표시
-   annotate("segment", x = as.Date("2023-06-01"), xend = as.Date("2023-06-01"),
+   annotate("segment", x = as.Date("2023-06-06"), xend = as.Date("2023-06-06"),
             y = 2.7, yend = 2.5, arrow = arrow(length = unit(0.3, "cm")), color = "#E41A1C") +
    annotate("text", x = as.Date("2023-06-01"), y = 2.8, 
             label = "Apple Vision Pro 발표", 
