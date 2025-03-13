@@ -97,8 +97,8 @@ disease_data <- list(
 venn_plot <- ggVennDiagram(
    disease_data,
    label_alpha = 0.7,
-   category.names = c("Heart\nDisease", "Stroke", "Diabetic"),
-   set_size = 4
+   category.names = c("심장병", "뇌졸증", "당뇨병"),
+   set_size = 10
 ) +
    scale_fill_gradient(
       low = "#E6F5FF", 
@@ -110,12 +110,10 @@ venn_plot <- ggVennDiagram(
       legend.position = "right",
       panel.background = element_rect(fill = "white"),
       plot.background = element_rect(fill = "white", color = NA),
-      plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-      plot.subtitle = element_text(hjust = 0.5, size = 12)
+      plot.title = element_text(hjust = 0.5, size = 30, face = "bold")
    ) +
    labs(
-      title = "Overlap Between Heart Disease, Stroke, and Diabetes",
-      subtitle = "Distribution of patients across multiple conditions"
+      title = "심장병, 뇌졸중, 당뇨병 벤다이어 그램"
    )
 
 # 출력

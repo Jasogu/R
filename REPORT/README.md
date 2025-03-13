@@ -119,6 +119,175 @@ Apple과 삼성전자의 주가 상승률 비교 시각화. (첫날을 100%로 �
 
 <br><br><br>
 
+## 1. 심장질환 분석 모델
+
+[데이터](https://docs.google.com/spreadsheets/d/1AhSACyLwqAcJndfFMgU_5jNOMqMdjXfWeMO9MhjkqTI/edit?usp=sharing)
+[데이터 출처](https://github.com/yc015/yida-r-visualization-portfolio-website)
+
+### 데이터 설명
+
+str(heart_data)
+
+ $ HeartDisease    : Factor w/ 2 levels "No","Yes": 1 1 1 1 1 2 1 1 1 1 ...<br>
+ $ BMI             : num  16.6 20.3 26.6 24.2 23.7 ...<br>
+ $ Smoking         : Factor w/ 2 levels "No","Yes": 2 1 2 1 1 2 1 2 1 1 ...<br>
+ $ AlcoholDrinking : Factor w/ 2 levels "No","Yes": 1 1 1 1 1 1 1 1 1 1 ...<br>
+ $ Stroke          : Factor w/ 2 levels "No","Yes": 1 2 1 1 1 1 1 1 1 1 ...<br>
+ $ PhysicalHealth  : num  3 0 20 0 28 6 15 5 0 0 ...<br>
+ $ MentalHealth    : num  30 0 30 0 0 0 0 0 0 0 ...<br>
+ $ DiffWalking     : Factor w/ 2 levels "No","Yes": 1 1 1 1 2 2 1 2 1 2 ...<br>
+ $ Sex             : Factor w/ 2 levels "Female","Male": 1 1 2 1 1 1 1 1 1 2 ...<br>
+ $ AgeCategory     : Factor w/ 13 levels "18-24","25-29",..: 8 13 10 12 5 12 11 13 13 10 ...<br>
+ $ Race            : Factor w/ 6 levels "American Indian/Alaskan Native",..: 6 6 6 6 6 3 6 6 6 6 ...<br>
+ $ Diabetic        : Factor w/ 4 levels "No","No, borderline diabetes",..: 3 1 3 1 1 1 1 3 2 1 ...<br>
+ $ PhysicalActivity: Factor w/ 2 levels "No","Yes": 2 2 2 1 2 1 2 1 1 2 ...<br>
+ $ GenHealth       : Factor w/ 5 levels "Excellent","Fair",..: 5 5 2 3 5 2 2 3 2 3 ...<br>
+ $ SleepTime       : num  5 7 8 6 8 12 4 9 5 10 ...<br>
+ $ Asthma          : Factor w/ 2 levels "No","Yes": 2 1 2 1 1 1 2 2 1 1 ...<br>
+ $ KidneyDisease   : Factor w/ 2 levels "No","Yes": 1 1 1 1 1 1 1 1 2 1 ...<br>
+ $ SkinCancer      : Factor w/ 2 levels "No","Yes": 2 1 1 2 1 1 2 1 1 1 ...<br>
+
+
+데이터에서 심장병(HeartDisease)의 비중은 다음과 같다.(Yes가 심장병에 걸린 경우)
+
+No : 292422(91.4%) <br>
+Yes : 27373(8.55%)
+
+
+범주형 변수에 대한 카이제곱 검정 결과:
+
+           Variable       P_Value
+           
+1           Smoking  0.000000e+00<br>
+2            Stroke  0.000000e+00<br>
+3       DiffWalking  0.000000e+00<br>
+4               Sex  0.000000e+00<br>
+5          Diabetic  0.000000e+00<br>
+6  PhysicalActivity  0.000000e+00<br>
+7         GenHealth  0.000000e+00<br>
+8     KidneyDisease  0.000000e+00<br>
+9        SkinCancer  0.000000e+00<br>
+10             Race 2.988613e-180<br>
+11           Asthma 2.238614e-121<br>
+12  AlcoholDrinking  1.892352e-73<br>
+
+모든 변수에서 카이제곱 검정 결과가 0.05보다 작으므로 유의미한 결과를 얻을 수 있다(귀무가설 기각)
+
+
+수치형 변수에 대한 t-test 결과:
+
+        Variable       P_Value
+        
+1            BMI 2.772150e-175<br>
+2 PhysicalHealth  0.000000e+00<br>
+3   MentalHealth  1.480102e-45<br>
+4      SleepTime  1.133140e-04<br>
+
+수치형 변수에서도 모든 변수에서 p-value가 0.05보다 작으므로 유의미한 결과를 얻을 수 있다(귀무가설 기각)
+
+1. 데이터의 70%는 훈련용 데이터로 사용하고, 30%는 테스트용 데이터로 사용
+1. K-fold 교차검증(5-fold)과 RandomForest를 통해 분석
+1. 클래스 가중치를 통한 불균형 처리 적용(심장병이 있는 경우가 훨씬 적은 것을 보정)
+
+<br>
+
+### 분석 결과
+
+          Reference<br>
+Prediction    No   Yes<br>
+       No  86430  7288<br>
+       Yes  1296   923<br>
+                                          <br>
+               Accuracy : 0.9105          <br>
+                 95% CI : (0.9087, 0.9123)<br>
+    No Information Rate : 0.9144          <br>
+    P-Value [Acc > NIR] : 1<br>               
+                                          
+                  Kappa : 0.1459<br>         
+                                          
+ Mcnemar's Test P-Value : <2e-16          
+                                          
+            Sensitivity : 0.9852 <br>      
+            Specificity : 0.1124 <br>
+         Pos Pred Value : 0.9222 <br>
+         Neg Pred Value : 0.4160 <br>
+             Prevalence : 0.9144 <br>
+         Detection Rate : 0.9009 <br>
+   Detection Prevalence : 0.9769 <br>
+      Balanced Accuracy : 0.5488 <br>
+
+분석 결과, 정확도는 91.05%로 나타났다.
+
+Sensitive는 98.52%로 심장병이 없을 거라고 예측했을 때, 실제로 심장병이 없을 확률이 98.52%라는 의미로 상당히 유의미한 예측이 가능하다.
+
+하지만 Specificity는 11.24%라는 상당히 낮은 수치로 심장병이 있을 거라고 예측했을 때, 실제로 심장병을 가지고 있을 확률이 11.24%라는 의미로 유의미한 예측이 불가능하다.
+
+결론적으로 이 모델은 심장병이 있든지 없든지 무조건 No라고 예측하는 것과 비슷한 결과를 보여준다. 
+
+<br>
+
+Confusion Matrix and Statistics
+
+          Reference<br>
+Prediction    No   Yes<br>
+       No  63445  2114<br>
+       Yes 24281  6097<br>
+                                         
+               Accuracy : 0.7249         <br>
+                 95% CI : (0.722, 0.7277)<br>
+    No Information Rate : 0.9144         <br>
+    P-Value [Acc > NIR] : 1              <br>
+                                         
+                  Kappa : 0.2095         
+                                         
+ Mcnemar's Test P-Value : <2e-16         
+                                         
+            Sensitivity : 0.7232         <br>
+            Specificity : 0.7425         <br>
+         Pos Pred Value : 0.9678         <br>
+         Neg Pred Value : 0.2007         <br>
+             Prevalence : 0.9144         <br>
+         Detection Rate : 0.6613         <br>
+   Detection Prevalence : 0.6834         <br>
+      Balanced Accuracy : 0.7329         <br>
+                                         
+       'Positive' Class : No      
+
+최적 임계값을 적용한 모델의 정확도는 72.49%로 나타났다.
+
+실제로 심장병이 없는 경우(No)인 63445+24281=87726건 중 63445건을 정확하게 예측했으며(72.3%) <br>
+실제로 심장병이 있는 경우(Yes)인 2114+6097=8211건 중 6097건을 정확하게 예측했다.(74.3%)
+
+
+
+### 모델 성능: 
+최적 임계값을 적용한 모델 성능:
+1. 정확도: 0.724871530275076"
+1. 민감도: 0.723217746164193"
+1. 특이도: 0.742540494458653"
+
+5. 교차 검증 모델 성능: 
+  mtry       ROC      Sens       Spec       ROCSD       SensSD      SpecSD <br>
+1    2 0.7737728 0.9987884 0.02588456 0.003132079 0.0003342991 0.002130767 <br>
+2    9 0.8047359 0.9853246 0.11637595 0.002206424 0.0004457536 0.005630109 <br>
+3   17 0.7983929 0.9793792 0.13114472 0.002797976 0.0007140436 0.007927933 <br>
+
+
+
+### 데이터 시각화
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
