@@ -207,11 +207,19 @@ Yes : 27373(8.55%)
 
 ![ ](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/Heart%20Disease%20Data%20Analysis/unnamed-chunk-1-1.png)
 
+<br>
+
 ![ ](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/Heart%20Disease%20Data%20Analysis/unnamed-chunk-1-2.png)
+
+<br>
 
 ![ ](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/Heart%20Disease%20Data%20Analysis/unnamed-chunk-1-4.png)
 
+<br>
+
 ![ ](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/Heart%20Disease%20Data%20Analysis/unnamed-chunk-1-3.png)
+
+<br>
 
 ![](https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/Heart%20Disease%20Data%20Analysis/venn.png)
 
@@ -312,7 +320,7 @@ Confusion Matrix and Statistics
 
 실제로 심장병이 있는 경우(Yes)인 2114+6097=8211건 중 6097건을 정확하게 예측했다.(74.3%)
 
-
+[소스 코드 링크](https://github.com/Jasogu/R/blob/main/REPORT/code/Heart%20Disease%20Data%20Analysis.r)
 
 
 
