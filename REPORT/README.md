@@ -48,6 +48,7 @@ ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 �
 #### Dashboard
 
 Cursor를 이용하여 R의 Shiny 라이브러리를 사용하여 대시보드를 만들었음
+(소스 코드 경로 : REPORT/code/신용등급 예측 모델)
 
 <img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%20%EC%9A%94%EC%95%BD.png" width="100%">
 
