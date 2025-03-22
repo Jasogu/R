@@ -49,13 +49,13 @@ ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 �
 
 Cursor를 이용하여 R의 Shiny 라이브러리를 사용하여 대시보드를 만들었음
 
-<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%20%EC%9A%94%EC%95%BD.png" width="90%">
+<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%20%EC%9A%94%EC%95%BD.png" width="100%">
 
-<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%AA%A8%EB%8D%B8%20%EC%84%B1%EB%8A%A5.png" width="90%">
+<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%AA%A8%EB%8D%B8%20%EC%84%B1%EB%8A%A5.png" width="100%">
 
-<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EC%97%85%EC%A2%85%EB%B3%84%20%EB%93%B1%EA%B8%89.png" width="90%">
+<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EC%97%85%EC%A2%85%EB%B3%84%20%EB%93%B1%EA%B8%89.png" width="100%">
 
-<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%B6%84%EC%84%9D%20%EB%8D%B0%EC%9D%B4%ED%84%B0.png" width="90%">
+<img src="https://raw.githubusercontent.com/Jasogu/R/refs/heads/main/REPORT/images/%EC%8B%A0%EC%9A%A9%EB%B6%84%EC%84%9D%20dashboard/%EB%B6%84%EC%84%9D%20%EB%8D%B0%EC%9D%B4%ED%84%B0.png" width="100%">
 <br>
 <br>
 
