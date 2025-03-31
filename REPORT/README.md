@@ -31,7 +31,7 @@ ex2) KIS에서 AAA, KR에서 AA+, NICE에서 평가하지 않았다면 AA+로 �
 <br>
 
 ### 분석 설명
-[분석 코드 링크](https://github.com/Jasogu/R/blob/main/REPORT/code/%EC%8B%A0%EC%9A%A9%EB%93%B1%EA%B8%89%20%EC%98%88%EC%B8%A1%20%EB%AA%A8%EB%8D%B8_%EB%B6%84%EC%84%9D.R)
+[분석 코드 링크](https://github.com/Jasogu/R/blob/46fbee4709aa3bb9b1be76da2efd6ae33a14cbcc/REPORT/code/%EC%8B%A0%EC%9A%A9%EB%93%B1%EA%B8%89%20%EC%98%88%EC%B8%A1%20%EB%AA%A8%EB%8D%B8/%EC%8B%A0%EC%9A%A9%EB%93%B1%EA%B8%89%20%EC%98%88%EC%B8%A1%20%EB%AA%A8%EB%8D%B8_%EB%B6%84%EC%84%9D.R)
 
 1. 분석파트는 Claude 3.7 Sonnet을 활용하여 설계됨
 1. RandomForest, Gradient Boosting Machine, Soft Vector Machine 3가지 모델을 사용하여 각자 분석 후 가장 좋은 결과값을 내는 모델 채택
